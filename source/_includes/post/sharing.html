@@ -1,6 +1,6 @@
 <div class="share">
 	<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
-	{% if site.weibo_share %}
+	<!-- {% if site.weibo_share %}
 	<a class="addthis_button_sinaweibo"></a>
 	{% endif %}
 	{% if site.facebook_like %}
@@ -14,7 +14,13 @@
 	{% endif %}
 	{% if site.google_plus_one %}
 	<a class="addthis_button_google_plusone_share"></a>
-	{% endif %}
+	{% endif %} -->
+	
+	{% if site.weibo_share %}
+	     {% include post/weibo.html %}
+	 {% endif %}
+	
+	
 	<a class="addthis_button_compact"></a>
 	<a class="addthis_counter addthis_bubble_style"></a>
 	</div>

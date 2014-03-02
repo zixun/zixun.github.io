@@ -471,6 +471,10 @@ a:focus {
     font-size: 20px;
 }
 
+#one-more-thing {
+    text-align: center;
+}
+
 #motto {
     text-align: center;
 }
@@ -482,6 +486,7 @@ a:focus {
 }
 
 #back {
+	text-align: center;
     width: 700px;
     padding-bottom: 400px;
 
