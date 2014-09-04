@@ -22,6 +22,8 @@ categories:
 *   [Block](#block)
 *   [GCD](#gcd)
 *   [绘图&动画](#graphics&animation)
+*   [runtime](#runtime)
+*   [c语言](#c-language)
 *   [代码优化](#uplevel)
 *   [调试](#debug)
 *   [第三方库使用](#vender)
@@ -114,15 +116,26 @@ categories:
 * [GCD 深入理解：第一部分](https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md) by nixzhu<br/>
 
 <h1 id="graphics&animation">绘图&动画</h1>
-* [在iOS中让图片旋转时抗锯齿](http://blog.xcodev.com/archives/anti-alise-for-image-ios/) by xcodev<br/>
+* [在iOS中让图片旋转时抗锯齿](http://blog.xcodev.com/archives/anti-alise-for-image-ios/) by xcodev<br
 
-* [Objective C中C99的使用](http://answerhuang.duapp.com/index.php/2013/10/17/objective-c_c99/) by answerhuang<br/>
 
+* [[Objective C中C99的使用](http://answerhuang.duapp.com/index.php/2013/10/17/objective-c_c99/) by answerhuangbr/>
+*
 <h1 id="uplevel">代码优化</h1>
 * [类簇在iOS开发中的应用](http://blog.leezhong.com/ios/2014/01/04/class-cluster.html) by无网不剩<br/>
 
 * [iOS项目的目录结构和开发流程](http://blog.leezhong.com/ios/2013/09/23/build-ios-application.html) by无网不剩<br/>
 
+
+
+<h1 id="runtime">runtime</h1>
+* [objc/runtime 探索(一)](http://blog.devwu.com/develop/2014-08-15/objcruntime-explore1/)<br/>
+* [objc/runtime 探索(二))](http://blog.devwu.com/develop/2014-08-17/objcruntime-explore2/)<br/>
+* [objc/runtime 探索(三))](http://blog.devwu.com/develop/2014-08-18/objcruntime-explore3/)<br/>
+* [objc/runtime 探索(四))](http://blog.devwu.com/develop/2014-08-19/objcruntime-explore4/)<br/>
+
+<h1 id="c-language">c语言</h1>
+* [什么情况下用宏定义do{}while(0);这种结构体](http://www.cnblogs.com/rollenholt/articles/1907414.html)<br/>
 
 <h1 id="debug">调试</h1>
 * [LLDB调试命令初探](http://www.starfelix.com/blog/2014/03/17/lldbdiao-shi-ming-ling-chu-tan/) by 达叔<br/>
