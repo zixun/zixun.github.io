@@ -13,6 +13,8 @@ categories:
 
 `UITableView`是分很多`section`的，但是横向滚动的控件一般只会有一种Cell，不会像`UITableView`一样需要分很多不同种类的Cell，所以我们可以改造[TWUI](https://github.com/twitter/twui)的Cell重用机制，使它更适合横向滚动的视图控件。
 
+**Note:**之前在团队内部做过一个这个控件的Cell重用的分享，用Keynote演示，不过是用Objective-C描述的，对于理解上会有帮助。Keynote文件也在Github上。
+
 <!-- more -->
 
 # 设计分析
@@ -114,6 +116,16 @@ private func rectForColumnAtIndex(index: Int) -> CGRect {
 需要删除的Cell的index:            0 1
 需要添加的Cell的index:                            8 9
 ```
+<img style="position:absolute; left:50%; margin-left:-375px;" src="/images/custom/post/cell.png" >
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
 这样我们就可以发现我们需要计算的信息了:
 
 * 滑动前老的可见的Cell的index(`oldVisibleIndex`);
@@ -230,5 +242,5 @@ class ViewController: UIViewController,ZXOptionBarDelegate,ZXOptionBarDataSource
 **Note1:**本篇文章只是抽离总结分享了一个OptionBar的核心功能（Cell重用和数据视图分离），读者可以根据自己应有的需要继承或者改写该类，添加新功能（比如：下标指示器indicator，indicator的样式，indicator的动画，类目选中动画之类的）。
 
 **Note2:**文章中只是罗列了核心代码，具体代码已放在Github上：[ZXOptionBar-Swift](https://github.com/zixun/ZXOptionBar-Swift)，感兴趣的同学可以下载下来。
-**Note2:**之前在团队内部做过一个这个控件的Cell重用的分享，用Keynote演示，不过是用Objective-C描述的，对于理解上会有帮助。Keynote文件也在Github上。
+
 

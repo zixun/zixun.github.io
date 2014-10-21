@@ -9,6 +9,8 @@ categories:
 **NOTE:** 这篇文章主要用来收集自己在网上看到的不错的文章，并做归类整理，这篇文章会持续更新，确保每篇文章都是自己看过的，也可以当做是自己的学习资料。<br/><br/>
 **目录** <br/>
 
+*   [Swift](#swift)
+*   [屏幕适配](#screen_adaptation)
 *   [工程](#application)
 *   [Foundation](#foundation)
 *   [旋转](#rotation)
@@ -39,6 +41,27 @@ categories:
 
 <br/>
 <!-- more -->
+
+<h1 id="swift">Swift</h1>
+
+* [The Swift Programming Language 中文版](http://numbbbbb.gitbooks.io/-the-swift-programming-language-/content/) by Swift 中文翻译组<br/>
+
+* [CocoaChina Swift专场](http://www.cocoachina.com/special/swift/) by CocoaChina<br/>
+
+* [Swift语言指南](https://github.com/ipader/SwiftGuide) by ipader<br/>
+
+* [喵神的Swift书~Tip列表](http://swifter.tips/) by onevcat<br/>
+
+* [Swift论坛社区](https://swiftist.org/) by Swiftist<br/>
+
+
+
+<h1 id="screen_adaptation">屏幕适配</h1>
+
+* [为iPhone6设计自适应布局（一）](http://www.devtalking.com/articles/adaptive-layout-for-iphone6-1/) by 宇轩<br/>
+
+* [为iPhone6设计自适应布局（二）](http://www.devtalking.com/articles/adaptive-layout-for-iphone6-2/) by 宇轩<br/>
+
 
 <h1 id="application">工程</h1>
 * [iOS开发实战：如何将非ARC的项目转换成ARC项目](http://www.cocoachina.com/ios/20140912/9605.html) by CocoaChina<br/>
@@ -213,7 +236,8 @@ Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。�
 * [唐巧](http://blog.devtang.com/)(InfoQ编辑，Blogger，iOS开发，创业者，前网易员工。微信公共账号iOSDevTips创建者。)
 * [破船](http://beyondvincent.com/)(宠辱不惊，闲看庭前花开花落。去留无意，漫随天外云卷云舒。不妄取，不妄予，不妄想，不妄求。与人方便，随遇而安)
 * [喵神](http://onevcat.com/) (iOS/Mac,Unity3D开发者，现就职于日本创意公司Kayac，正在修行，探求创意之源)
-* [念茜](http://blog.csdn.net/yiyaaixuexi?viewmode=contents)(一单线程妞儿，iOS安全大牛)
+* [念茜](http://nianxi.net/)(一单线程妞儿，iOS安全大牛)
+* [宇轩](http://www.devtalking.com/)(付宇轩，80后，程序员，关注技术和人文，记录学习的点点滴滴于《程序员说》)
 * [6david9](http://blog.cocoabit.com/)(iOS码农，攻城狮。喜欢各种有意思的东西。最近迷恋上了自行车。)
 * [txx’s blog](http://blog.t-xx.me/)(中山大学大四翘课熬夜党 广州贴贴信息科技技术总监 高度强迫症 代码洁癖的 iOS开发者)
 * [lldong](http://lldong.github.io/)(不详！)
@@ -239,7 +263,12 @@ Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。�
 
 
 <h3 id="periodical">期刊</h3>
-* [objc.io](http://www.objc.io/),这个期刊相当有名，每期都会有多篇文章关注一个点，有人做了一个对其翻译的整理-->[iosinit.com](http://iosinit.com/?p=787) <br/>
+* [objc.io](http://www.objc.io/) ---中文版---> [objccn.io](http://www.objccn.io/)
+
+* [nshipster.com](http://nshipster.com/) ---中文版---> [nshipster.cn](http://nshipster.cn/)
+
+
+* [raywenderlich.com](http://www.raywenderlich.com/) 
 
 
 
