@@ -32,6 +32,7 @@ categories:
 *   [第三方库使用](#vender)
 *   [底层分析](#analyze)
 *   [StoryBoard](#storyBoard)
+*   [逆向](#reverse)
 *   [面试](#interview)
 *   [工具](#tools)
 *   [技巧](#xiaojiqiao)
@@ -53,6 +54,16 @@ categories:
 * [喵神的Swift书~Tip列表](http://swifter.tips/) by onevcat<br/>
 
 * [Swift论坛社区](https://swiftist.org/) by Swiftist<br/>
+
+* [( ) -> ( )](http://blog.sunnyxx.com/2014/10/14/fp-essential/) by sunnyxx<br/>
+
+* [Swift如何检查系统版本](http://idlelife.org/archives/716) by http://idlelife.org<br/>
+
+
+* [我在开发第一个Swift App过程中学到的四件事](http://idlelife.org/archives/742) by http://idlelife.org<br/>
+
+
+
 
 
 
@@ -180,6 +191,11 @@ categories:
 <h1 id="storyBoard">StoryBoard</h1>
 * [StoryBoard--看上去很美](http://blog.devtang.com/blog/2012/12/15/do-not-use-storyboard/) by 唐巧<br/>
 
+
+<h1 id="reverse">逆向</h1>
+
+* [TweakWeek](http://tweakweek.com/) 每周一个开源tweek<br/>
+* [iPhone 7.0 Headers](http://developer.limneos.net/)<br/>
 
 <h1 id="interview">面试</h1>
 * [上级向的十个iOS面试问题](http://onevcat.com/2013/04/ios-interview/) by onevcat<br/>
