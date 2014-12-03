@@ -9,41 +9,49 @@ categories:
 **NOTE:** 这篇文章主要用来收集自己在网上看到的不错的文章，并做归类整理，这篇文章会持续更新，确保每篇文章都是自己看过的，也可以当做是自己的学习资料。<br/><br/>
 **目录** <br/>
 
-*   [Swift](#swift)
-*   [屏幕适配](#screen_adaptation)
-*   [工程](#application)
-*   [Foundation](#foundation)
-*   [旋转](#rotation)
-*   [Category](#category)
-*   [UIKit](#uikit)
-	*   [UIViewController](#uiviewcontroller)
-	*   [UITableView](#uitableview)
-	*   [UIActionSheet](#uiactionSheet)
-	*   [其他](#uikitother)
-*   [iOS7](#ios7)
-*   [内存管理](#memory)
-*   [Block](#block)
-*   [GCD](#gcd)
-*   [绘图&动画](#graphics&animation)
-*   [runtime](#runtime)
-*   [c语言](#c-language)
-*   [代码优化](#uplevel)
-*   [调试](#debug)
-*   [第三方库使用](#vender)
-*   [底层分析](#analyze)
-*   [StoryBoard](#storyBoard)
-*   [逆向](#reverse)
-*   [面试](#interview)
-*   [工具](#tools)
-*   [技巧](#xiaojiqiao)
-*   [博客](#blog)
-*   [期刊](#periodical)
-*   [Markdown](#markdown)
+*	[iOS开发](#iOS)
+*	*   [Swift](#swift)
+*	*   [屏幕适配](#screen_adaptation)
+*	*   [工程](#application)
+*	*   [Foundation](#foundation)
+*	*   [旋转](#rotation)
+*	*   [Category](#category)
+*	*   [UIKit](#uikit)
+		*   [UIViewController](#uiviewcontroller)
+		*   [UITableView](#uitableview)
+		*   [UIActionSheet](#uiactionSheet)
+		*   [其他](#uikitother)
+*	*   [iOS7](#ios7)
+*	*   [内存管理](#memory)
+*	*   [Block](#block)
+*	*   [GCD](#gcd)
+*	*   [绘图&动画](#graphics&animation)
+*	*   [runtime](#runtime)
+*	*   [c语言](#c-language)
+*	*   [代码优化](#uplevel)
+*	*   [调试](#debug)
+*	*   [第三方库使用](#vender)
+*	*   [底层分析](#analyze)
+*	*   [StoryBoard](#storyBoard)
+*	*   [逆向](#reverse)
+*	*   [面试](#interview)
+*	*   [工具](#tools)
+*	*   [技巧](#xiaojiqiao)
+*	*   [博客](#blog)
+*	*   [期刊](#periodical)
+
+*	[其他](#else)
+*	*	[UI设计](#uidesign)
+*	*	*	[Sketch](#sketch)
+*   *	[Markdown](#markdown)
+
 
 <br/>
 <!-- more -->
 
-<h1 id="swift">Swift</h1>
+<h1 id="iOS">iOS开发</h1>
+
+<h2 id="swift">Swift</h2>
 
 * [The Swift Programming Language 中文版](http://numbbbbb.gitbooks.io/-the-swift-programming-language-/content/) by Swift 中文翻译组<br/>
 
@@ -67,18 +75,18 @@ categories:
 
 
 
-<h1 id="screen_adaptation">屏幕适配</h1>
+<h2 id="screen_adaptation">屏幕适配</h2>
 
 * [为iPhone6设计自适应布局（一）](http://www.devtalking.com/articles/adaptive-layout-for-iphone6-1/) by 宇轩<br/>
 
 * [为iPhone6设计自适应布局（二）](http://www.devtalking.com/articles/adaptive-layout-for-iphone6-2/) by 宇轩<br/>
 
 
-<h1 id="application">工程</h1>
+<h2 id="application">工程</h2>
 * [iOS开发实战：如何将非ARC的项目转换成ARC项目](http://www.cocoachina.com/ios/20140912/9605.html) by CocoaChina<br/>
 
 
-<h1 id="foundation">Foundation</h1>
+<h2 id="foundation">Foundation</h2>
 * [对NSArray中自定义的对象进行排序](http://beyondvincent.com/blog/2014/01/26/how-to-sort-nsarray-with-custom-objects/) by破船<br/>
 
 * [Compile-time Key Paths Verification](http://lldong.github.io/2014/02/24/key-paths-validation.html) by lldong<br/>
@@ -90,16 +98,16 @@ categories:
 * [用宏提速NSCoding](http://www.isaced.com/post-244.html) by isaced<br/>
 * [Toll-Free Bridging](http://gracelancy.com/blog/2014/04/21/toll-free-bridging/) by Lancy<br/>
 
-<h1 id="rotation">旋转</h1>
+<h2 id="rotation">旋转</h2>
 * [iOS旋转视图实践](http://rdc.taobao.org/?p=408) by淘宝技术部<br/>
 * [强制旋转一个UIViewController](http://blog.t-xx.me/blog/2014/01/19/force-rotate-uiviewcontroller/) bytxx's blog<br/>
 
-<h1 id="category">Category</h1>
+<h2 id="category">Category</h2>
 * [Objective-C相关Category的收集](http://www.cocoachina.com/applenews/devnews/2014/0212/7808.html) by CocoaChina<br/>
 
 * [Objective-C语言在Category中实现属性](http://blog.xcodev.com/archives/implement-objc-property-in-category/) by xcodev<br/>
 
-<h1 id="uikit">UIKit</h1>
+<h2 id="uikit">UIKit</h2>
 
 <h4 id="uiviewcontroller">UIViewController</h4>
 * [iOS5中UIViewController的新方法](http://blog.devtang.com/blog/2012/02/06/new-methods-in-uiviewcontroller-of-ios5/) by 唐巧<br/>
@@ -128,7 +136,7 @@ categories:
 * [如何自定义iOS中的控件](http://beyondvincent.com/blog/2014/01/20/how-to-build-a-custom-control-in-ios/) by 破船<br/>
 
 
-<h1 id="ios7">iOS7</h1>
+<h2 id="ios7">iOS7</h2>
 * [iOS 7中实现模糊效果](http://beyondvincent.com/blog/2014/01/29/ios-7-blur-effects-gpuimage/) by破船<br/>
 
 * [iOS 7 教程：让程序同时支持iOS 6和iOS 7](http://beyondvincent.com/blog/2013/11/19/122-working-with-ios-6-and-7/) by破船<br/>
@@ -141,21 +149,21 @@ categories:
 
 * [iOS 7 键盘动画](http://nonomori.farbox.com/post/ios-7-jian-pan-dong-hua) by nonomori<br/>
 
-<h1 id="memory">内存管理</h1>
+<h2 id="memory">内存管理</h2>
 * [手把手教你ARC——iOS/Mac开发ARC入门和使用](http://onevcat.com/2012/06/arc-hand-by-hand/) by onevcat<br/>
 
 * [retainCount 不会为 0](http://lldong.github.io/2011/10/20/retain-count.html) by lldong<br/>
 
 
  
-<h1 id="block">Block</h1>
+<h2 id="block">Block</h2>
 * [谈Objective-C Block的实现](http://blog.devtang.com/blog/2013/07/28/a-look-inside-blocks/) by 唐巧<br/>
 
-<h1 id="gcd">GCD</h1>
+<h2 id="gcd">GCD</h2>
 * [使用GCD](http://blog.devtang.com/blog/2012/02/22/use-gcd/) by 唐巧<br/>
 * [GCD 深入理解：第一部分](https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md) by nixzhu<br/>
 
-<h1 id="graphics&animation">绘图&动画</h1>
+<h2 id="graphics&animation">绘图&动画</h2>
 * [在iOS中让图片旋转时抗锯齿](http://blog.xcodev.com/archives/anti-alise-for-image-ios/) by xcodev<br
 
 
@@ -168,40 +176,40 @@ categories:
 
 
 
-<h1 id="runtime">runtime</h1>
+<h2 id="runtime">runtime</h2>
 * [objc/runtime 探索(一)](http://blog.devwu.com/develop/2014-08-15/objcruntime-explore1/)<br/>
 * [objc/runtime 探索(二))](http://blog.devwu.com/develop/2014-08-17/objcruntime-explore2/)<br/>
 * [objc/runtime 探索(三))](http://blog.devwu.com/develop/2014-08-18/objcruntime-explore3/)<br/>
 * [objc/runtime 探索(四))](http://blog.devwu.com/develop/2014-08-19/objcruntime-explore4/)<br/>
 
-<h1 id="c-language">c语言</h1>
+<h2 id="c-language">c语言</h2>
 * [什么情况下用宏定义do{}while(0);这种结构体](http://www.cnblogs.com/rollenholt/articles/1907414.html)<br/>
 
-<h1 id="debug">调试</h1>
+<h2 id="debug">调试</h2>
 * [LLDB调试命令初探](http://www.starfelix.com/blog/2014/03/17/lldbdiao-shi-ming-ling-chu-tan/) by 达叔<br/>
 
-<h1 id="vender">第三方库使用</h1>
+<h2 id="vender">第三方库使用</h2>
 * [在iOS开发中使用FMDB](http://blog.devtang.com/blog/2013/07/28/a-look-inside-blocks/) by 唐巧<br/>
 
 
-<h1 id="analyze">底层分析</h1>
+<h2 id="analyze">底层分析</h2>
 * [Objective-C对象模型及应用](http://blog.devtang.com/blog/2013/10/15/objective-c-object-model/) by 唐巧<br/>
 
 
-<h1 id="storyBoard">StoryBoard</h1>
+<h2 id="storyBoard">StoryBoard</h2>
 * [StoryBoard--看上去很美](http://blog.devtang.com/blog/2012/12/15/do-not-use-storyboard/) by 唐巧<br/>
 
 
-<h1 id="reverse">逆向</h1>
+<h2 id="reverse">逆向</h2>
 
 * [TweakWeek](http://tweakweek.com/) 每周一个开源tweek<br/>
 * [iPhone 7.0 Headers](http://developer.limneos.net/)<br/>
 
-<h1 id="interview">面试</h1>
+<h2 id="interview">面试</h2>
 * [上级向的十个iOS面试问题](http://onevcat.com/2013/04/ios-interview/) by onevcat<br/>
 
 
-<h1 id="tools">工具</h1>
+<h2 id="tools">工具</h2>
 * [使用CocoaPods来做iOS程序的包依赖管理](http://blog.devtang.com/blog/2012/12/02/use-cocoapod-to-manage-ios-lib-dependency/) by 唐巧<br/>
 
 * [CocoaPods详解之----制作篇](http://blog.csdn.net/wzzvictory/article/details/20067595) by wangzz<br/>
@@ -209,7 +217,7 @@ categories:
 
 * [Enrolling in Apple Developer Programs](http://girlios.github.io/blog/2014/03/16/enrolling-in-apple-developer-programs/) by Girl_iOS<br/>
 
-<h1 id="xiaojiqiao">技巧</h1>
+<h2 id="xiaojiqiao">技巧</h2>
 * [Xcode Key Bindings & Gestures利用快捷键提高开发效率](http://www.cocoachina.com/newbie/basic/2014/0225/7882.html) by CocoaChina<br/>
 
 * [www.gitignore.io/](http://www.gitignore.io/) by gitignore<br/>
@@ -219,7 +227,7 @@ categories:
 
 * [少有人知的 GitHub 使用技巧](http://segmentfault.com/a/1190000000475547) by segmentfault<br/>
 
-<h1 id="pulgin">插件</h1>
+<h2 id="pulgin">插件</h2>
 
 * [Alcatraz](https://github.com/supermarin/Alcatraz) by Github</br>
 Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。它可以直接集成到Xcode的图形界面中，让你感觉就像在使用Xcode自带的功能一样.这里有一篇很好的介绍它的文章[使用Alcatraz来管理Xcode插件](http://blog.devtang.com/blog/2014/03/05/use-alcatraz-to-manage-xcode-plugins/)
@@ -246,7 +254,7 @@ Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。�
 
 
 
-<h3 id="blog">博客</h3>
+<h2 id="blog">博客</h2>
 
 * [Girl_iOS](http://girlios.github.io/)(萌妹子，iOS程序媛，下面的大牛博客很多都是摘自她的博客@Girl_iOS)
 * [唐巧](http://blog.devtang.com/)(InfoQ编辑，Blogger，iOS开发，创业者，前网易员工。微信公共账号iOSDevTips创建者。)
@@ -278,7 +286,7 @@ Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。�
 
 
 
-<h3 id="periodical">期刊</h3>
+<h2 id="periodical">期刊</h2>
 * [objc.io](http://www.objc.io/) ---中文版---> [objccn.io](http://www.objccn.io/)
 
 * [nshipster.com](http://nshipster.com/) ---中文版---> [nshipster.cn](http://nshipster.cn/)
@@ -287,8 +295,18 @@ Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。�
 * [raywenderlich.com](http://www.raywenderlich.com/) 
 
 
+<h1 id="else">其他</h1>
+
+<h2 id="uidesign">UI设计</h2>
+
+<h4 id="sketch">Sketch</h4>
 
 
-<h3 id="markdown">Markdown</h3>
+* [酷九合金社Sketch教程系列-IOS图标（上）](http://www.zcool.com.cn/article/ZODQ1ODA=.html) by C9D<br/>
+
+* [酷九合金社Sketch教程系列-IOS图标（下）](http://www.zcool.com.cn/article/ZODQ1ODg=.html) by C9D<br/>
+
+
+<h2 id="markdown">Markdown</h2>
 * [Markdown 语法说明 (简体中文版)](http://wowubuntu.com/markdown/index.html)<br/>
 

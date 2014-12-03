@@ -156,6 +156,30 @@ Note: 当你在打字的时候Xcode会猜测你可能输入的一个叫 JBLineCh
 ```
 Note: 为了本书的清晰度的目的展示在这里的View是白色背景的。你的视图实际上会和通知中心一样有一个深色的背景色。
 ```
+不要担心页面的布局，你马上就会通过适当的定义布局来添加AutoLayout约束。
+
+现在展开在`Project Navigator`的`Crypticker`组，选中`Images.xcassets`。在`File Inspector`中勾选`BTC Widget`将其添加到extension的target上。
+这样Xcode就会将`Images.xcassets`从你的`Crypticker`target上添加到`BTC Widget`的target上；这是你的button使用的`caret-notification-center`图片存放的地方。如果你在主app和widget上有重复的image assets，这是一个很好的共享方式。这可以通过不添加已经在使用的图片来减少App膨胀。
+
+
+<p align="center">
+	<img style="width:281px;height:500px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AssetCatalog-11-480x273.png" >
+</p>
+<br/>
+
+返回到`MainInterface.storyboard`，打开`Assistant Editor`。确保`TodayViewController.swift`是它的active file。将下面的代码添加到`TodayViewController.swift`的顶部：
+
+```swift
+import CryptoCurrencyKit
+```
+这是用来导入CryptoCurrencyKit framework。
+接下来，你需要像这样更新他的类声明：
+```swift
+class TodayViewController: CurrencyDataViewController, NCWidgetProviding {
+```
+这会让`TodayViewController`成为`CurrencyDataViewController`的一个子类，确保他
+
+
 
 
 
