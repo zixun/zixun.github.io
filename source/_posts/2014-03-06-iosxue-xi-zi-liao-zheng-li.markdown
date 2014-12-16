@@ -166,7 +166,6 @@ categories:
 <h2 id="graphics&animation">绘图&动画</h2>
 * [在iOS中让图片旋转时抗锯齿](http://blog.xcodev.com/archives/anti-alise-for-image-ios/) by xcodev<br
 
-
 * [[Objective C中C99的使用](http://answerhuang.duapp.com/index.php/2013/10/17/objective-c_c99/) by answerhuangbr/>
 *
 <h1 id="uplevel">代码优化</h1>
@@ -174,6 +173,7 @@ categories:
 
 * [iOS项目的目录结构和开发流程](http://blog.leezhong.com/ios/2013/09/23/build-ios-application.html) by无网不剩<br/>
 
+* [Facebook Pop & Tweaks Demo](http://studentdeng.github.io/blog/2014/05/09/pop-tweaks/) by不会开机的男孩<br/>
 
 
 <h2 id="runtime">runtime</h2>
@@ -305,6 +305,10 @@ Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。�
 * [酷九合金社Sketch教程系列-IOS图标（上）](http://www.zcool.com.cn/article/ZODQ1ODA=.html) by C9D<br/>
 
 * [酷九合金社Sketch教程系列-IOS图标（下）](http://www.zcool.com.cn/article/ZODQ1ODg=.html) by C9D<br/>
+
+* [奇葩的Sketch教程，专治各种疑难杂症](http://www.ui.cn/project.php?id=31346) by JaminWoo<br/>
+
+
 
 
 <h2 id="markdown">Markdown</h2>
