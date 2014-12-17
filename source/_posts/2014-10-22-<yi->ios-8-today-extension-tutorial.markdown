@@ -216,21 +216,21 @@ class TodayViewController: CurrencyDataViewController, NCWidgetProviding {
 选中$592.12这个label，然后选择`Editor\Size to Fit Content`。如果`Size to Fit Content`选项不在你的菜单中，取消选中这个label，然后再次选中重试一遍。Xcode有的时候会抽风。接下来，使用在storyboard画布下的`Pin`按钮。分别钉住`Top`和`Leading`的空间为8和16。确保`Constrain to margins`处于关闭状态。
 
 <p align="center">
-	<img style="width:208px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-1-208x320" >
+	<img style="width:208px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-1-208x320.png" >
 </p>
 <br/>
 
 现在选中+1.23这个label，再次选中`Editor\Size to Fit Content`。然后使用`Pin`按钮，钉住`Top`和`Trailing`空间都为8.
 
 <p align="center">
-	<img style="width:209px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-2-209x320" >
+	<img style="width:209px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-2-209x320.png" >
 </p>
 <br/>
 
 选中那个Button，使用`Pin`按钮，钉住他的`Top`和`Trailing`两个的空间为0，以及他的Button空间为8。再钉住他的`Width`和`Height`都为44.确保`Constrain to margins`处于关闭状态。
 
 <p align="center">
-	<img style="width:206px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-3-206x320" >
+	<img style="width:206px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-3-206x320.png" >
 </p>
 <br/>
 
@@ -240,7 +240,7 @@ class TodayViewController: CurrencyDataViewController, NCWidgetProviding {
 
 
 <p align="center">
-	<img style="width:480px;height:303px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-4-480x303" >
+	<img style="width:480px;height:303px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-4-480x303.png" >
 </p>
 <br/>
 
@@ -248,7 +248,7 @@ class TodayViewController: CurrencyDataViewController, NCWidgetProviding {
 
 
 <p align="center">
-	<img style="width:209px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-5-209x320" >
+	<img style="width:209px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-5-209x320.png" >
 </p>
 
 从`Document Outline`中选中视图控制器的View，然后选择`Editor\Resolve Auto Layout Issues\All Views\Update Frames`.这会通过更新视图的frame来匹配他们的约束，从而修复在画布上的任何`Auto Layout`的警告。如果`Update Frames`不可用，那么你的一切都狠完美，这是不必要的运行。
@@ -258,7 +258,7 @@ class TodayViewController: CurrencyDataViewController, NCWidgetProviding {
 然后点击三角形，找到我们需要的高度约束。选中他，然后按住Ctrl，拖拽到 `Assistant Editor`，放在其他outlet的下面。在弹出框中确保`Connection`被设置为`Outlet`，在`Name`中输入`lineChartHeightConstraint`。点击`Connect`。
 
 <p align="center">
-	<img style="width:480px;height:190px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-6-480x190" >
+	<img style="width:480px;height:190px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-6-480x190.png" >
 </p>
 
 ### 实现TodayViewController.swift
@@ -331,7 +331,7 @@ Widget默认有一个很大的`left margin`，这在Apple很多的默认Widget�
 
 
 <p align="center">
-	<img style="width:480px;height:164px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widget-Almost1-480x164" >
+	<img style="width:480px;height:164px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widget-Almost1-480x164.png" >
 </p>
 
 
@@ -339,7 +339,7 @@ Widget默认有一个很大的`left margin`，这在Apple很多的默认Widget�
 
 
 <p align="center">
-	<img style="width:480px;height:329px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-YUNO" >
+	<img style="width:480px;height:329px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-YUNO.png" >
 </p>
 
 接下来，你要为你添加的button实现`toggleLineChart`方法，用来展开widget的视图并且显示线形图。就像方法名说的一样，这个button就像一个转换键一样；他也会折叠视图从而隐藏图表。
@@ -396,7 +396,7 @@ override func lineChartView(lineChartView: JBLineChartView!,
 确保当前的scheme依旧选中，编译运行。当app运行的时候出现提示就选择`Today`。
 
 <p align="center">
-	<img style="width:480px;height:286px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widet-Done-480x286" >
+	<img style="width:480px;height:286px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widet-Done-480x286.png" >
 </p>
 
 你最后要做的就是通过允许系统来创建一个快照，当屏幕关闭的时候添加对Widget更新视图的支持。系统会定期的帮助你的widget保持最新。
