@@ -380,7 +380,7 @@ override func viewDidLayoutSubviews() {
 
 
 <p align="center">
-	<img style="width:480px;height:144px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widet-Almost2-480x144" >
+	<img style="width:480px;height:144px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widet-Almost2-480x144.png" >
 </p>
 
 添加如下代码到`TodayViewController`，你会拥有一个快速更新的线颜色以及目光尖锐的widget：
