@@ -22,6 +22,8 @@ categories:
 		*   [UIActionSheet](#uiactionSheet)
 		*   [其他](#uikitother)
 	*   [iOS7](#ios7)
+	*	[iOS8](#ios8)
+		*	[App Extension](#appextension)
 	*   [内存管理](#memory)
 	*   [Block](#block)
 	*   [GCD](#gcd)
@@ -148,6 +150,22 @@ categories:
 * [iOS 7中的一些小修改](http://beyondvincent.com/blog/2013/09/20/112-ios-7-additions-omg-finally/) by破船<br/>
 
 * [iOS 7 键盘动画](http://nonomori.farbox.com/post/ios-7-jian-pan-dong-hua) by nonomori<br/>
+
+<h2 id="ios8">iOS8</h2>
+
+<h4 id="appextension">App Extension</h4>
+
+* [WWDC2014之App Extensions学习笔记](http://foggry.com/blog/2014/06/23/wwdc2014zhi-app-extensionsxue-xi-bi-ji/) by foggry.com<br/>
+
+* [iOS 8 Today Extension Tutorial](http://www.raywenderlich.com/83809/ios-8-today-extension-tutorial) by raywenderlich.com<br/>
+
+* [<译>iOS 8 Today Extension Tutorial](http://zixun.github.io/blog/2014/10/22/%3Cyi-%3Eios-8-today-extension-tutorial/) by zixun.github.io<br/>
+
+
+
+
+
+
 
 <h2 id="memory">内存管理</h2>
 * [手把手教你ARC——iOS/Mac开发ARC入门和使用](http://onevcat.com/2012/06/arc-hand-by-hand/) by onevcat<br/>
