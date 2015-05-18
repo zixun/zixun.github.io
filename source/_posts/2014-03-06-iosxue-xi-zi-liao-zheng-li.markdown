@@ -10,6 +10,7 @@ categories:
 **目录** <br/>
 
 *	[iOS开发](#iOS)
+	*	[Apple Watch](#applewatch)	
 	*   [Swift](#swift)
 	*   [屏幕适配](#screen_adaptation)
 	*   [工程](#application)
@@ -52,6 +53,16 @@ categories:
 <!-- more -->
 
 <h1 id="iOS">iOS开发</h1>
+
+<h2 id="applewatch">Apple Watch</h2>
+
+* [Apple Watch 开发调研一：总览](http://jerryliu.org/ios%20programming/Apple-Watch-Overview/) by Swift 小瑞的BLOG<br/>
+
+* [Apple Watch 开发调研二：WatchKit Apps](http://jerryliu.org/ios%20programming/Apple%20Watch-WatchKit-Apps/) by Swift 小瑞的BLOG<br/>
+
+* [Apple Watch 开发调研三: Glances,Notifications](http://jerryliu.org/ios%20programming/Apple%20Watch-Glances-Notifications/) by Swift 小瑞的BLOG<br/>
+
+* [Apple Watch三个月开发的一些收获总结](http://jerryliu.org/ios%20programming/Apple%20Watch-Development-summary/) by Swift 小瑞的BLOG<br/>
 
 <h2 id="swift">Swift</h2>
 
@@ -176,6 +187,9 @@ categories:
  
 <h2 id="block">Block</h2>
 * [谈Objective-C Block的实现](http://blog.devtang.com/blog/2013/07/28/a-look-inside-blocks/) by 唐巧<br/>
+* [正确使用Block避免Cycle Retain和Crash](http://tanqisen.github.io/blog/2013/04/19/gcd-block-cycle-retain/) by tanqisen<br/>
+
+
 
 <h2 id="gcd">GCD</h2>
 * [使用GCD](http://blog.devtang.com/blog/2012/02/22/use-gcd/) by 唐巧<br/>
@@ -199,6 +213,7 @@ categories:
 * [objc/runtime 探索(二))](http://blog.devwu.com/develop/2014-08-17/objcruntime-explore2/)<br/>
 * [objc/runtime 探索(三))](http://blog.devwu.com/develop/2014-08-18/objcruntime-explore3/)<br/>
 * [objc/runtime 探索(四))](http://blog.devwu.com/develop/2014-08-19/objcruntime-explore4/)<br/>
+* [轻松学习之一－－Objective-C消息转发](http://www.jianshu.com/p/1bde36ad9938) by J_雨<br/>
 
 <h2 id="c-language">c语言</h2>
 * [什么情况下用宏定义do{}while(0);这种结构体](http://www.cnblogs.com/rollenholt/articles/1907414.html)<br/>

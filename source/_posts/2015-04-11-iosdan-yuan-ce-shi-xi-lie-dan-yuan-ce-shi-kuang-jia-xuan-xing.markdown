@@ -1,0 +1,67 @@
+---
+layout: post
+title: "[iOS单元测试系列]单元测试框架选型"
+date: 2015-04-11 13:42:02 +0800
+comments: true
+categories: 
+---
+这段时间在团队里一直在负责对单元测试的探索和落地，感觉有必要总结下自己这段时间的探索成果和大家分享。加之已经忙的很久没写博客了，感觉没有沉淀，这样不好。iOS单元测试系列会一直更新，按主题将我在单元测试探索和落地过程中的技术积累沉淀下来，也算是对自己这段时间的总结。部分观点是我个人观点，欢迎大家讨论。
+
+一开始接到的不是单元测试的任务，而是与测试同学共建完成iOS上持续集成能跑测试用例的平台。然后我就吭哧吭哧的区研究Jenkins，后来发现不对，就算我把平台搭建好了没有测试用例也只是个空壳子，而应该合理分工，测试同学负责搭建平台，开发负责写测试用例。
+
+<!-- more -->
+
+###XCTest Or GHUnit
+写测试用例总得有个框架吧，现在比较流行的就属Apple自带的XCTest和第三方的GHUnit。我们来看看他两之间的区别。
+XCTest：与Xcode深度集成。而且可以享受Apple后续对XCTest升级的福利。
+GHUnit：集成度不如XCTest，安装麻烦。但是有自己的GUI界面。
+貌似都各有所长，那么我们来看看Github上的一些知名的开源库都用的是什么测试框架吧。
+
+![hello world](/images/custom/post/iosdan-yuan-ce-shi-xi-lie-dan-yuan-ce-shi-kuang-jia-xuan-xing/danyuanceshi-1.jpg)
+
+可以看到清一色的被XCTest刷屏了。也的确，GHUnit的GUI界面对我们来说没有什么特别大的意义。而XCTest血统纯正，背后站着东家Apple。而对于我们的选择也应该是XCTest，应该既然Github上又这么多XCTest的case例子可以参考，对我们的帮助肯定不言而喻。
+
+###OCMock Or OCMockito
+
+这两个都是用来mock对象，stub方法的。[OCMock](https://github.com/erikdoe/ocmock) 和 [OCMockito](https://github.com/jonreid/OCMockito)个人感觉功能区别不大。他们之间的区别在于使用OCMock的库比OCMockito的库多，而且文档和教程更加丰富。大家可以打开[OCMock官网](http://ocmock.org/)看一下。所以个人选择我选了OCMock作为我们的测试mock工具。
+
+### Expecta Or OCHamcrest
+
+[Expecta](https://github.com/specta/expecta)和[OCHamcrest](https://github.com/hamcrest/OCHamcrest)这两个都是断言的扩展框架。一开始我选择了Expecta，因为我后来有一段时间将测试文件用BDD框架Specta来写（当然这是后话），而Expecta 和Specta都出自同一个人之手，不论是教程文档都更加丰富。但是后来我废弃了BDD框架，还是用原生的XCTest，Expecta在使用中也遇到了一些问题，我就把我们的断言框架由Expecta切换到了OCHamcrest。
+
+原因有两点：
+	1.Expecta不成熟，至笔者切换的时候才0.3.1版本，遇到很多框架自身的问题。case跑着跑着验证通不过了，再跑一次又过了，是不是还爆出个Expecta框架内部的crash。
+	2.OCHamcrest更加成熟，而且可扩展性高，可以自定义自己的断言，更灵活。
+
+比如OCHamcrest不支持superClass验证，我们必须自己去比较，返回一个bool值，然后去判断bool是否为真。很麻烦。自己自定义个superClass的验证，就不需要每次都这么麻烦的写这么多代码了。而如果Expecta不支持的断言，那就永远不能支持了。
+我们可以通过OCHamcrest这个特性，做一些符合自己app场景的特有断言。
+
+### BDD Or Not
+BDD的全称是Behavior Driven Development。也就是行为驱动开发。BDD确实让我眼前一亮。他能将测试语言写成类似自然语言。BDD的理念是你不是在写代码，而是在讲故事。而整个故事是由Given...When...Then组成。我们可以来看看BDD框架[Kiwi](https://github.com/kiwi-bdd/Kiwi)的一段测试代码:
+```objective-c
+describe(@"Team", ^{
+    context(@"when newly created", ^{
+        it(@"has a name", ^{
+            id team = [Team team];
+            [[team.name should] equal:@"Black Hawks"];
+        });
+
+        it(@"has 11 players", ^{
+            id team = [Team team];
+            [[[team should] have:11] players];
+        });
+    });
+});
+```
+这个测试用例就是在说**Given a Team,When newly created,it should have a name, and should have 11 players**。
+的确很清晰，基本不需要注释就能知道在干嘛了。
+既然BDD这么好，那么我们比较下BDD框架Kiwi和XCTest + OCMock组合的优劣吧。为什么是XCTest + OCMock而不是XCTest，因为Kiwi自带mock功能，而XCTest没有mock功能。
+
+![danyuanceshi-2](/images/custom/post/iosdan-yuan-ce-shi-xi-lie-dan-yuan-ce-shi-kuang-jia-xuan-xing/danyuanceshi-2.jpg)
+
+可以看出Kiwi还是蛮诱人的。但是Kiwi的mock功能api远没有OCMock设计的好，尤其是OCMock3推出后，所以笔者想把Kiwi和OCMock一起用，结果这两个库存在不兼容性。一跑就挂。后来迁移到BDD另一个框架Specta，BDD的理念相同，所以语法也大同小异。Specta和Kiwi的区别就是Kiwi包含了Specta和OCmock以及Expeata所有的功能。换句话说Specta就是没有mock和验证功能的kiwi。但是想对来说，specta的API设计更加合理。
+
+`但是，高潮来了！后续我还是废弃了BDD，切换回XCTest，原因有很多。主要的原因是BDD框架hold不住业务的发展，BDD的讲故事理念在业务面前就是老太太的裹脚布，又臭又长！而且BDD需要一定的学习成本，不像XCTest这种类JUnit的对开发者更友好的代码。而且BDD的框架包装过深，可扩展性不高。还有就是BDD的框架普遍太年轻，bug相对较多，版本迭代太快。最最致命的是BDD的框架不能单个case单个跑，一跑所有的case全部跑一边这在平时写case 的时候是非常拖沓的！`
+
+### 总结
+也没啥好总结的。一个个坑踩下来，最后的选择是XCTest + OCMock + OCHamcrest是我认为最好的框架方案。当然，这是我的个人观点~

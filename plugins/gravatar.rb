@@ -24,12 +24,14 @@ module Jekyll
 
 			# compile the full Gravatar URL
 			image_src = "http://www.gravatar.com/avatar/#{gravatar_hash}"
+
 			
                         # append size query to URL if provided in tag
                         unless @size.empty?
                           image_src = image_src+"?s=#{@size}"
                         end
-			
+            # gravatar被墙 使用本地图片
+			image_src = "/images/custom/photo/touxiang.png"
 			# output the full Gravatar URL
 			image_src
 		end
