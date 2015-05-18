@@ -10,6 +10,7 @@ categories:
 **目录** <br/>
 
 *	[iOS开发](#iOS)
+	*	[架构设计](#jiagou)	
 	*	[Apple Watch](#applewatch)	
 	*   [Swift](#swift)
 	*   [屏幕适配](#screen_adaptation)
@@ -52,6 +53,18 @@ categories:
 <br/>
 <!-- more -->
 
+<h1 id="jiagou">架构设计</h1>
+* [iOS应用架构谈 开篇](http://casatwy.com/iosying-yong-jia-gou-tan-kai-pian.html) by Casa Taloyum
+ 
+* [iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html) by Casa Taloyum
+  
+* [跳出面向对象思想(一) 继承](http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-yi-ji-cheng.html) by Casa Taloyum
+   
+* [跳出面向对象思想(二) 多态](http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-er-duo-tai.html) by Casa Taloyum
+    
+* [跳出面向对象思想(三) 封装](http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-san-feng-zhuang.html) by Casa Taloyum
+ 
+ 
 <h1 id="iOS">iOS开发</h1>
 
 <h2 id="applewatch">Apple Watch</h2>
@@ -106,10 +119,16 @@ categories:
 
 * [Cocoa 漢字轉拼音最簡單的方法](http://lldong.github.io/2012/11/06/hanzi-to-pinyin.html) by lldong<br/>
 
-* [iOS将大文件映射到内存](http://blog.xcodev.com/archives/ios-mmap-api/) by xcodev<br/>
+* [iOS将大文件映射到内存](http://blog.xcodev.com/archives/ios-mmap-api/) by xcodev
 
-* [用宏提速NSCoding](http://www.isaced.com/post-244.html) by isaced<br/>
-* [Toll-Free Bridging](http://gracelancy.com/blog/2014/04/21/toll-free-bridging/) by Lancy<br/>
+
+* [用宏提速NSCoding](http://www.isaced.com/post-244.html) by isaced
+ 
+* [Toll-Free Bridging](http://gracelancy.com/blog/2014/04/21/toll-free-bridging/) by Lancy
+
+* [NSString属性什么时候用copy，什么时候用strong?](http://www.cocoachina.com/ios/20150512/11805.html) by 南峰子的技术博客<br/>
+
+
 
 <h2 id="rotation">旋转</h2>
 * [iOS旋转视图实践](http://rdc.taobao.org/?p=408) by淘宝技术部<br/>
