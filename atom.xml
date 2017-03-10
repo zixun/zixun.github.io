@@ -4,7 +4,7 @@
   <title><![CDATA[子循(SubCycle)]]></title>
   <link href="http://zixun.github.io/atom.xml" rel="self"/>
   <link href="http://zixun.github.io/"/>
-  <updated>2017-03-10T15:45:51+08:00</updated>
+  <updated>2017-03-10T15:57:26+08:00</updated>
   <id>http://zixun.github.io/</id>
   <author>
     <name><![CDATA[陈奕龙]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<h1>什么是GodEye</h1>
 
 <p>什么是GodEye？这个问题可以让GodEye自己告诉我们。</p>
+
+<!-- more -->
+
 
 <p>打开GodEye后，我们可以看到第一个tab页有一个Terminal的入口，这个功能是用来输入接入方自己预置的指令的，当然GodEye有一个默认的指令<code>help</code>可以输出一小段GodEye的自我介绍以及接入方自己已经预置的指令列表：</p>
 
