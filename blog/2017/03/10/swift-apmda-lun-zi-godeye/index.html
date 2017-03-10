@@ -1,0 +1,318 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Swift APM大轮子-GodEye - 子循(SubCycle)</title>
+	<meta name="author" content="陈奕龙">
+
+	
+	<meta name="description" content="Swift APM大轮子-GodEye 什么是GodEye 什么是GodEye？这个问题可以让GodEye自己告诉我们。 打开GodEye后，我们可以看到第一个tab页有一个Terminal的入口，这个功能是用来输入接入方自己预置的指令的， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="子循(SubCycle)" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zixun.github.io/blog/2017/03/10/swift-apmda-lun-zi-godeye/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("chenyl.exe@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    记录我的技术与生活
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:chenyl.exe@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/zixun" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Swift APM大轮子-GodEye</h1>
+	<div class="entry-content" itemprop="articleBody"><h1>什么是GodEye</h1>
+
+<p>什么是GodEye？这个问题可以让GodEye自己告诉我们。</p>
+
+<p>打开GodEye后，我们可以看到第一个tab页有一个Terminal的入口，这个功能是用来输入接入方自己预置的指令的，当然GodEye有一个默认的指令<code>help</code>可以输出一小段GodEye的自我介绍以及接入方自己已经预置的指令列表：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/help.jpg" alt="hello world" /></p>
+
+<p>由于在我们截图的demo里并没有配置预置指令，因此这里的Commands没有输出任何一个指令，当然这不是重点，重点是GodEye的自我介绍，我们可以看到这样一句话：</p>
+
+<pre><code>Automaticly disply Log,Crash,Network,ANR,Leak,CPU,RAM,FPS,NetFlow,Folder and etc with one line of code. Just like God opened his eyes
+</code></pre>
+
+<p>翻译过来就是GodEye是一个可以通过一行代码来自动展示日志，崩溃，网络，卡顿，内存泄漏以及CPU，RAM,FPS,网络流量，文件目录等硬件信息的工具，就像上帝睁开了他的眼睛。</p>
+
+<h2>如何打开</h2>
+
+<p>在任何界面下三个手指上滑，或者点击GodEye的AssistiveButton即可</p>
+
+<h2>特色</h2>
+
+<p>功能丰富，一行代码接入，零代码入侵</p>
+
+<p>线上包可完全不打入代码</p>
+
+<h2>安装</h2>
+
+<p>GodEye目前可以通过CocoaPods来安装，只需要将下面的代码加入到你的Podfile中即可：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">pod</span> <span class="s1">&#39;GodEye&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后，在我们的<code>application:didFinishLaunchingWithOptions</code>方法中通过一行代码即可接入:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">GodEye</span><span class="o">.</span><span class="n">makeEye</span><span class="p">(</span><span class="ss">with</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">window!</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然，一行代码接入是一种默认配置的接入，读者也可以通过传入自己的<code>Configuration</code>来精细化配置各个细节，这里就不展开说了，感兴趣的可以看一下Configuration注释就好。</p>
+
+<h1>GodEye提供的功能</h1>
+
+<p>上一节我们简单的介绍了下GodEye，可见GodEye提供的功能很多，这一节我们以GodEye的界面为基础，简单介绍下GodEye能提供给我们什么样的功能</p>
+
+<h2>Console</h2>
+
+<p>打开GodEye后我们可以看到第一个Tab页的名字是Console，是的，这个tab下都是一些输出的控制台，和一个Terminal的输入控制台：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/console.jpg" alt="hello world" />
+由图可见，在Console模块中我们可以查看日志，崩溃，网络， 卡顿，内存泄漏，以及一个输入指令的终端。</p>
+
+<h3>Log</h3>
+
+<p>第一个子模块就是Log，也就是日志，点击进入后可以看到如下日志列表：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/log.jpg" alt="hello world" /></p>
+
+<p>Log模块可以自动记录ASL（Apple System Log）以及Log4G的日志，并按照顺序自动展示在该列表中，关于ASL以及Log4G的详细信息可以参看第一章节&mdash;日志监控</p>
+
+<h3>Crash</h3>
+
+<p>第二个子模块就是Crash，也就是崩溃模块，该模块可以全自动监控App中的<code>Uncatched Exception</code>崩溃以及底层Signal崩溃。</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/crash.jpg" alt="hello world" /></p>
+
+<p>由图可见，我们不但可以看到崩溃的原因，还能看到崩溃的堆栈，极大的方便了我们debug。当然，这些信息只能在你崩溃后重新打开才能查看哦。</p>
+
+<h3>Network</h3>
+
+<p>第三个子模块就是Network，也就是网络请求和网络响应的监控，这个模块可以监控我们发出的网络请求各个字段以及对应的网络响应的各个字段。当然这些字段非常多，因此默认我们是折叠显示的：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/net_list.jpg" alt="hello world" /></p>
+
+<p>折叠状态下，我们只能看到请求的URL。点击一下这个cell，我们就能展开这个cell，展开后我们可以看到各个有值的字段：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/net_detail.jpg" alt="hello world" /></p>
+
+<h3>ANR</h3>
+
+<p>第四个子模块就是ANR,Application Not Responsed，也就是应用不响应，平时我们叫它&mdash;卡顿。在我们日常使用中，经常会出现卡顿的现象，卡顿很难追踪，因为其偶然性以及原因复杂性都相对比较大。卡顿监控模块可以在发生卡顿时，记录所有的堆栈，方便追踪：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/anr_list.jpg" alt="hello world" /></p>
+
+<p>当然上图只是折叠显示，折叠显示下只会展示卡顿时候的主线程堆栈，当然，一般卡顿的原因也都发生在主线程。当然，点击这个cell也能看到所有线程的堆栈：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/anr_detail.jpg" alt="hello world" /></p>
+
+<h3>Leak</h3>
+
+<p>第五个子模块是Leak模块，可以记录发生内存泄漏的对象，当出现内存泄漏的时候会将对象记录在这里。</p>
+
+<h3>Terminal</h3>
+
+<p>最后一个子模块就是终端模块，用户可以自定义指令，在App运行的任何地方任何时候都能输入你的指令，获得你想要的数据。当然，如果你忘了你配置过哪些指令，你也可以输入<code>help</code>指令，它会告诉你所有配置的指令:</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/terminal.jpg" alt="hello world" /></p>
+
+<h2>Monitor</h2>
+
+<p>第二个tab页是monitor，就是各种硬件实时指标的监控器：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/monitor.jpg" alt="hello world" /></p>
+
+<p>在这里我们可以实时监控系统的CPU，自身应用的CPU，应用的内存使用，系统的内存使用率，帧率FPS,应用的网络流量，系统的网络流量。后续版本迭代还会加入图表的功能，到时点击一个指标的监控数据，就可以看到历史心跳图，或者饼状图，应该会比较酷炫。</p>
+
+<h2>File</h2>
+
+<p>第三个tab是File,在这里我们可以查看我们App的沙盒文件，以及.app的内部包文件，还有就是整个手机的根目录文件：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/file_list.jpg" alt="hello world" /></p>
+
+<p>选择一个目录后就会拉起我们的文件夹浏览器，可以查看文件夹下所有的文件以及文件夹：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/file_detail.jpg" alt="hello world" /></p>
+
+<h2>Setting</h2>
+
+<p>最后一个tab是Setting，当前版本可以配置我们的一些开关，后续版本迭代我们还会加入很多新的实时配置的东西，比如各种监控的阈值：</p>
+
+<p><img src="/images/custom/post/swift-apm-godeye/setting.jpg" alt="hello world" /></p>
+
+<h1>GodEye解决的痛点</h1>
+
+<p>GodEye是一个APM，一个帮助解决开发和调试时候步骤多，成本大，不方便的工具集合，因此GodEye能解决的痛点比较多，也比较散。</p>
+
+<p>上一节我们谈了GodEye的功能，这一节我们就来说说这些功能都解决了啥痛点。</p>
+
+<h2>痛点</h2>
+
+<h3>痛点1：查看日志需要连接Mac</h3>
+
+<p>我们平时查看日志输出的时候，必须将我们的手机连接到Mac电脑，用Xcode来查看。而GodEye的日志监控功能，就可以实现直接在App内查看，方便省时，还可以对日志做类别区分。</p>
+
+<h3>痛点2：Crash后需要Xcode查看堆栈</h3>
+
+<p>日常开发中Crash难免，谁都不能保证自己开发的App一个Crash的问题都没有。若是在我们日常写代码Debug的阶段Crash的话还好，可以直接在Xcode的console里看到堆栈；麻烦的是在测试人员测试的时候遇到的问题，如果能够复现还好，我们可以按部就班将操作日志再次展现在我们的Xcode控制台上，而要是难以复现的bug，我们就需要将测试人员的手机拿过来，然后找到对应的<code>.dSYM</code>文件将一堆内存地址符号化成代码。</p>
+
+<p>是不是非常复杂，GodEye的Crash监控模块就能解决这个问题，我们可以直接在手机上查看Crash堆栈，实时方便，珍爱生命。</p>
+
+<h3>痛点3：测试网络需要Charles设代理</h3>
+
+<p>Charles可以很方便的帮我们查看网络请求。如果读者对Charles不熟悉，可以看看巧神的&lt;iOS开发进阶>。当然，使用Charles也有不方便的时候，需要身边有一台电脑，需要设置代理。GodEye的网络监控模块就可以省去这个烦恼，直接在App内部查看网络请求和网络响应，非常方便。后续还会加入数据mock，以及实时修改数据等功能。</p>
+
+<h3>痛点4：卡顿原因难以捕捉</h3>
+
+<p>众所周知，在移动设备上开发应用，性能是每一个developer关心的问题。作为developer我们可以通过提高自身技术，提高代码质量来优化我们应用的性能。当然我们不一定能及时发现代码存在的性能问题，这时就需要有一个能够监控并及时告知我们应用中那些耗费性能导致应用卡顿的“Bug”。GodEye的卡顿监控模块就是为此而开发。</p>
+
+<h3>痛点5：内存泄漏需要Instruments</h3>
+
+<p>不容置疑，Instruments的功能非常全面也非常强大，Leak和Allcation模块也非常实用。但是Instruments我们并不是经常会去使用，而且Instruments也有很多不便，首先你得打开Allocations，然后，你得一个个场景去重复的操作，我们无法及时得知泄漏，得专门做一遍上述操作，十分繁琐。GodEye的内存泄漏模块可以实时反馈给你内存泄漏的对象，非常方便。</p>
+
+<h3>痛点6：脱离Xcode就不能查看变量数据</h3>
+
+<p>如果我们在脱离我们的Xcode的时候想像连着Xcode那样来po一个对象或者数据的话基本是不可能的，GodEye提供了一个输入控制台，使用者可以自定义好对应的指令，运行的时候随时输入即可得到对应的数据，当然这些指令没有Xcode那么强大，但是已经够用了。</p>
+
+<h2>痛点7：无法得知硬件使用信息</h2>
+
+<p>大家是否遇到过一些疑难杂症，比如应用出现一些很奇怪的现象，经过艰苦卓绝的Debug原来是因为内存爆了，好多ViewController收到了内存警告。要是我们能对我们的硬件做监控就好了，我们能实时的知道我们的iPhone系统的CPU使用率，内存的使用率，要是能知道我们自己的app使用了多少CPU，多少内存就更好了。对，GodEye的硬件监控模块就能告诉你这些硬件信息。</p>
+
+<h3>痛点8：无法查看文件系统</h3>
+
+<p>我们平时做一些I/O操作的时候其实对我们是很不直观的，我们可能加了个文件，也可能改了个文件，我们通过代码能知道是否成功，但是我们不能亲眼看到，他就放在那里。或者我们想看一下我们的图片是否放入了我们的bundle，都很不方便。GodEye的文件模块就能很好的解决这个问题，不但能看整个沙盒的内容，还能看<code>.app</code>内部的内容，当然，也能看整个手机的根目录。</p>
+
+<h2>One More Thing</h2>
+
+<p>以上8个痛点，无一不是步骤多，成本大，不方便。而GodEye提供的功能就是为了解决这8个痛点。后续也会将已有的功能做的更加晚上，探索发现一些新的功能。</p>
+
+<p>能看到这里，说明你也将整本书看完了，再次感谢你的耐心，希望这本书能对你有所帮助。也希望你会喜欢GodEye。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    陈奕龙
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>
