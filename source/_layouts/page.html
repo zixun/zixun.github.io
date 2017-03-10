@@ -7,7 +7,6 @@ layout: default
     <h1 class="title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
     {% endif %}
     <div class="entry-content">{{ content }}</div>
-
 </article>
 {% unless page.sharing == false %}
 	{% include post/sharing.html %}
