@@ -4,7 +4,7 @@
   <title><![CDATA[子循(SubCycle)]]></title>
   <link href="http://zixun.github.io/atom.xml" rel="self"/>
   <link href="http://zixun.github.io/"/>
-  <updated>2017-03-10T15:57:26+08:00</updated>
+  <updated>2017-03-10T16:01:33+08:00</updated>
   <id>http://zixun.github.io/</id>
   <author>
     <name><![CDATA[陈奕龙]]></name>
@@ -18,9 +18,17 @@
     <link href="http://zixun.github.io/blog/2017/03/10/swift-apmda-lun-zi-godeye/"/>
     <updated>2017-03-10T15:30:12+08:00</updated>
     <id>http://zixun.github.io/blog/2017/03/10/swift-apmda-lun-zi-godeye</id>
-    <content type="html"><![CDATA[<h1>什么是GodEye</h1>
+    <content type="html"><![CDATA[<h1>0 前言</h1>
 
-<p>什么是GodEye？这个问题可以让GodEye自己告诉我们。</p>
+<p>该文章摘自笔者撰写的一本iOS技术书籍<a href="https://www.qingdan.us/product/25">iOS监控编程</a>。</p>
+
+<p>这是一本介绍iOS监控编程的书籍,内容涉及日志监控，监控崩溃，监控网络，监控卡顿，监控硬件，内存泄漏监控等方面。所有的功能都是通过自行编程实现，而不是通过使用第三方工具。每个章节记录了功能的实现细节，以及笔者一路探索过来的心路历程。当然，笔者后续依旧会寻求与探索新的监控方向，一旦有所得都会更新到本书的章节中。</p>
+
+<p>这本书是笔者的开源工具<a href="https://github.com/zixun/GodEye">GodEye</a>的产出物，GodEye能全自动，零代码入侵，一行代码接入来监控应用的日志，卡顿，崩溃，网络，内存泄漏，CPU以及内存使用率，帧率等信息。</p>
+
+<h1>什么是GodEye</h1>
+
+<p>什么是<a href="https://github.com/zixun/GodEye">GodEye</a>？这个问题可以让GodEye自己告诉我们。</p>
 
 <!-- more -->
 
