@@ -1,0 +1,142 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>impress.js | presentation tool based on the power of CSS3 transforms and transitions in modern browsers | by Bartek Szopka @bartaz</title>
+
+    <meta name="description" content="impress.js is a presentation tool based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com." />
+    <meta name="author" content="Bartek Szopka" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+
+    <link href="impress-demo.css" rel="stylesheet" />
+    <link href="impress_custom.css" rel="stylesheet" />
+
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+</head>
+
+
+<body class="impress-not-supported">
+
+<div class="fallback-message">
+    <p>你的浏览器 <b>不支持</b>impress.js, 所以你看到的是一个没有动画效果的超简易版本.</p>
+    <p>建议您使用最新版本的<b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> 浏览器.</p>
+</div>
+
+<div id="impress">
+
+    <div id="welcome" class="step" data-x="-2000" data-y="-2500">
+        <p>欢迎来到</p>
+        <p><span class="title"><b>SubCycle‘s Blog</b></span></p>
+        <p><span class="footnote"><sup>*</sup>我叫<span class="name">陈奕龙</span>，这里是我的博客</span></p>
+    </div>
+
+    <div id="me" class="step" data-x="0" data-y="-2500">
+        <b class="now_me">关于我：</b>
+        <ul>
+            <li><b class="unity">热衷iOS开发</b></li>
+            <li><b class="ios">关注Node.js</b></li>
+            <li><b class="photo">曾经是个javaer</b></li>
+            <li><b class="favrit">喜欢跳街舞,打排球</b></li>
+        </ul>
+    </div>
+
+    <div id="whereiam" class="step" data-x="850" data-y="3000" data-rotate="90" data-scale="3">
+        <p>长于<span class="kunming">诸暨</span></p>
+        <p><span class="born">我和西施是同乡,奈何时间错位了2000年</span></p>
+        <p>就读<span class="tsinghua">浙大</span></p>
+        <p><span class="study">求是创新,浙江最大的自学院</span></p>
+    </div>
+
+    <div id="japan" class="step" data-x="3500" data-y="2100" data-rotate="180" data-scale="4">
+        <p>居住于<b class="trans">杭州</b><p>
+        <p>就职于<b class="trans">阿里巴巴</b><p>
+    </div>
+
+    <div id="findme" class="step" data-x="-6000" data-y="1000" data-scale="4">
+        <p>您可以在<a href="http://weibo.com/chenyl107">新浪微博</a>，或者<a href="https://github.com/zixun">Github</a>上找到我,也可以逛一逛<a href="zixun.github.com">这个网站</a>，这里记录了我的工作于生活</p>
+        <img src="zixun.png">
+    </div>
+	
+    <div id="one-more-thing" class="step" data-x="-1500" data-y="-1100" data-z="0" data-scale="2">
+        <p>One More Thing</p>
+    </div>
+
+    <div id="motto" class="step" data-x="0" data-y="1500" data-z= "6000" data-scale="5">
+        <p>苦逼单身程序猿</p>
+        <p><b>求解脱</b></p>
+        <p><b>求带走</b></p>
+    </div>
+
+    <div id="back" class="step" data-x="-6000" data-y="5200" data-scale="2">
+        <p>谢谢您来访</p>
+        <p>点击<a href="http://zixun.github.io">子循的个人博客</a>返回</p>
+    </div>
+
+    <div id="overview" class="step" data-x="0" data-y="2500" data-scale="16">
+    </div>
+
+</div>
+
+
+<div class="hint">
+    <p>使用空格或方向键继续</p>
+</div>
+<script>
+    if ("ontouchstart" in document.documentElement) {
+        document.querySelector(".hint").innerHTML = "<p>Tap on the left or right to navigate</p>";
+    }
+</script>
+
+<!--
+
+    Last, but not least.
+
+    To make all described above really work, you need to include impress.js in the page.
+    I strongly encourage to minify it first.
+
+    In here I just include full source of the script to make it more readable.
+
+    You also need to call a `impress().init()` function to initialize impress.js presentation.
+    And you should do it in the end of your document. Not only because it's a good practice, but also
+    because it should be done when the whole document is ready.
+    Of course you can wrap it in any kind of "DOM ready" event, but I was too lazy to do so ;)
+
+-->
+<script src="impress.js"></script>
+<script>impress().init();</script>
+
+<!--
+
+    The `impress()` function also gives you access to the API that controls the presentation.
+
+    Just store the result of the call:
+
+        var api = impress();
+
+    and you will get three functions you can call:
+
+        `api.init()` - initializes the presentation,
+        `api.next()` - moves to next step of the presentation,
+        `api.prev()` - moves to previous step of the presentation,
+        `api.goto( idx | id | element, [duration] )` - moves the presentation to the step given by its index number
+                id or the DOM element; second parameter can be used to define duration of the transition in ms,
+                but it's optional - if not provided default transition duration for the presentation will be used.
+
+    You can also simply call `impress()` again to get the API, so `impress().next()` is also allowed.
+    Don't worry, it wont initialize the presentation again.
+
+    For some example uses of this API check the last part of the source of impress.js where the API
+    is used in event handlers.
+
+-->
+
+</body>
+</html>
+
+

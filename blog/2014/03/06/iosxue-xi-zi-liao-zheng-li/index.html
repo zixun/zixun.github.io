@@ -1,0 +1,649 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>iOS学习资料整理 - 子循(SubCycle)</title>
+	<meta name="author" content="陈奕龙">
+
+	
+	<meta name="description" content="iOS学习资料整理 NOTE: 这篇文章主要用来收集自己在网上看到的不错的文章，并做归类整理，这篇文章会持续更新，确保每篇文章都是自己看过的，也可以当做是自己的学习资料。
+目录 iOS开发 架构设计
+Apple Watch
+Swift
+屏幕适配
+工程
+Foundation
+旋转
+Category &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="子循(SubCycle)" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zixun.github.io/blog/2014/03/06/iosxue-xi-zi-liao-zheng-li/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("chenyl.exe@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    记录我的技术与生活
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:chenyl.exe@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/zixun" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">iOS学习资料整理</h1>
+	<div class="entry-content" itemprop="articleBody"><p><strong>NOTE:</strong> 这篇文章主要用来收集自己在网上看到的不错的文章，并做归类整理，这篇文章会持续更新，确保每篇文章都是自己看过的，也可以当做是自己的学习资料。<br/><br/>
+<strong>目录</strong> <br/></p>
+
+<ul>
+<li><p><a href="#iOS">iOS开发</a></p>
+
+<ul>
+<li><a href="#jiagou">架构设计</a></li>
+<li><a href="#applewatch">Apple Watch</a></li>
+<li><a href="#swift">Swift</a></li>
+<li><a href="#screen_adaptation">屏幕适配</a></li>
+<li><a href="#application">工程</a></li>
+<li><a href="#foundation">Foundation</a></li>
+<li><a href="#rotation">旋转</a></li>
+<li><a href="#category">Category</a></li>
+<li><a href="#uikit">UIKit</a>
+
+<ul>
+<li><a href="#uiviewcontroller">UIViewController</a></li>
+<li><a href="#uitableview">UITableView</a></li>
+<li><a href="#uiactionSheet">UIActionSheet</a></li>
+<li><a href="#uikitother">其他</a></li>
+</ul>
+</li>
+<li><a href="#ios7">iOS7</a></li>
+<li><a href="#ios8">iOS8</a>
+
+<ul>
+<li><a href="#appextension">App Extension</a></li>
+</ul>
+</li>
+<li><a href="#memory">内存管理</a></li>
+<li><a href="#block">Block</a></li>
+<li><a href="#gcd">GCD</a></li>
+<li><a href="#graphics&amp;animation">绘图&amp;动画</a></li>
+<li><a href="#runtime">runtime</a></li>
+<li><a href="#c-language">c语言</a></li>
+<li><a href="#uplevel">代码优化</a></li>
+<li><a href="#debug">调试</a></li>
+<li><a href="#vender">第三方库使用</a></li>
+<li><a href="#analyze">底层分析</a></li>
+<li><a href="#storyBoard">StoryBoard</a></li>
+<li><a href="#reverse">逆向</a></li>
+<li><a href="#interview">面试</a></li>
+<li><a href="#tools">工具</a></li>
+<li><a href="#xiaojiqiao">技巧</a></li>
+<li><a href="#blog">博客</a></li>
+<li><a href="#periodical">期刊</a></li>
+</ul>
+</li>
+<li><p><a href="#else">其他</a></p>
+
+<ul>
+<li><a href="#uidesign">UI设计</a>
+
+<ul>
+<li><a href="#sketch">Sketch</a></li>
+</ul>
+</li>
+<li><a href="#markdown">Markdown</a></li>
+</ul>
+</li>
+</ul>
+
+
+<br/>
+
+
+<!-- more -->
+
+
+
+
+<h1 id="jiagou">架构设计</h1>
+
+
+<ul>
+<li><p><a href="http://casatwy.com/iosying-yong-jia-gou-tan-kai-pian.html">iOS应用架构谈 开篇</a> by Casa Taloyum</p></li>
+<li><p><a href="http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html">iOS应用架构谈 view层的组织和调用方案</a> by Casa Taloyum</p></li>
+<li><p><a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-yi-ji-cheng.html">跳出面向对象思想(一) 继承</a> by Casa Taloyum</p></li>
+<li><p><a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-er-duo-tai.html">跳出面向对象思想(二) 多态</a> by Casa Taloyum</p></li>
+<li><p><a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-san-feng-zhuang.html">跳出面向对象思想(三) 封装</a> by Casa Taloyum</p></li>
+</ul>
+
+
+<h1 id="iOS">iOS开发</h1>
+
+
+
+
+<h2 id="applewatch">Apple Watch</h2>
+
+
+<ul>
+<li><p><a href="http://jerryliu.org/ios%20programming/Apple-Watch-Overview/">Apple Watch 开发调研一：总览</a> by Swift 小瑞的BLOG<br/></p></li>
+<li><p><a href="http://jerryliu.org/ios%20programming/Apple%20Watch-WatchKit-Apps/">Apple Watch 开发调研二：WatchKit Apps</a> by Swift 小瑞的BLOG<br/></p></li>
+<li><p><a href="http://jerryliu.org/ios%20programming/Apple%20Watch-Glances-Notifications/">Apple Watch 开发调研三: Glances,Notifications</a> by Swift 小瑞的BLOG<br/></p></li>
+<li><p><a href="http://jerryliu.org/ios%20programming/Apple%20Watch-Development-summary/">Apple Watch三个月开发的一些收获总结</a> by Swift 小瑞的BLOG<br/></p></li>
+</ul>
+
+
+<h2 id="swift">Swift</h2>
+
+
+<ul>
+<li><p><a href="http://numbbbbb.gitbooks.io/-the-swift-programming-language-/content/">The Swift Programming Language 中文版</a> by Swift 中文翻译组<br/></p></li>
+<li><p><a href="http://www.cocoachina.com/special/swift/">CocoaChina Swift专场</a> by CocoaChina<br/></p></li>
+<li><p><a href="https://github.com/ipader/SwiftGuide">Swift语言指南</a> by ipader<br/></p></li>
+<li><p><a href="http://swifter.tips/">喵神的Swift书~Tip列表</a> by onevcat<br/></p></li>
+<li><p><a href="https://swiftist.org/">Swift论坛社区</a> by Swiftist<br/></p></li>
+<li><p><a href="http://blog.sunnyxx.com/2014/10/14/fp-essential/">( ) &ndash;> ( )</a> by sunnyxx<br/></p></li>
+<li><p><a href="http://idlelife.org/archives/716">Swift如何检查系统版本</a> by <a href="http://idlelife.org">http://idlelife.org</a><br/></p></li>
+<li><p><a href="http://idlelife.org/archives/742">我在开发第一个Swift App过程中学到的四件事</a> by <a href="http://idlelife.org">http://idlelife.org</a><br/></p></li>
+</ul>
+
+
+<h2 id="screen_adaptation">屏幕适配</h2>
+
+
+<ul>
+<li><p><a href="http://www.devtalking.com/articles/adaptive-layout-for-iphone6-1/">为iPhone6设计自适应布局（一）</a> by 宇轩<br/></p></li>
+<li><p><a href="http://www.devtalking.com/articles/adaptive-layout-for-iphone6-2/">为iPhone6设计自适应布局（二）</a> by 宇轩<br/></p></li>
+</ul>
+
+
+<h2 id="application">工程</h2>
+
+
+<ul>
+<li><a href="http://www.cocoachina.com/ios/20140912/9605.html">iOS开发实战：如何将非ARC的项目转换成ARC项目</a> by CocoaChina<br/></li>
+</ul>
+
+
+<h2 id="foundation">Foundation</h2>
+
+
+<ul>
+<li><p><a href="http://beyondvincent.com/blog/2014/01/26/how-to-sort-nsarray-with-custom-objects/">对NSArray中自定义的对象进行排序</a> by破船<br/></p></li>
+<li><p><a href="http://lldong.github.io/2014/02/24/key-paths-validation.html">Compile-time Key Paths Verification</a> by lldong<br/></p></li>
+<li><p><a href="http://lldong.github.io/2012/11/06/hanzi-to-pinyin.html">Cocoa 漢字轉拼音最簡單的方法</a> by lldong<br/></p></li>
+<li><p><a href="http://blog.xcodev.com/archives/ios-mmap-api/">iOS将大文件映射到内存</a> by xcodev</p></li>
+<li><p><a href="http://www.isaced.com/post-244.html">用宏提速NSCoding</a> by isaced</p></li>
+<li><p><a href="http://gracelancy.com/blog/2014/04/21/toll-free-bridging/">Toll-Free Bridging</a> by Lancy</p></li>
+<li><p><a href="http://www.cocoachina.com/ios/20150512/11805.html">NSString属性什么时候用copy，什么时候用strong?</a> by 南峰子的技术博客<br/></p></li>
+</ul>
+
+
+<h2 id="rotation">旋转</h2>
+
+
+<ul>
+<li><a href="http://rdc.taobao.org/?p=408">iOS旋转视图实践</a> by淘宝技术部<br/></li>
+<li><a href="http://blog.t-xx.me/blog/2014/01/19/force-rotate-uiviewcontroller/">强制旋转一个UIViewController</a> bytxx&rsquo;s blog<br/></li>
+</ul>
+
+
+<h2 id="category">Category</h2>
+
+
+<ul>
+<li><p><a href="http://www.cocoachina.com/applenews/devnews/2014/0212/7808.html">Objective-C相关Category的收集</a> by CocoaChina<br/></p></li>
+<li><p><a href="http://blog.xcodev.com/archives/implement-objc-property-in-category/">Objective-C语言在Category中实现属性</a> by xcodev<br/></p></li>
+</ul>
+
+
+<h2 id="uikit">UIKit</h2>
+
+
+
+
+<h4 id="uiviewcontroller">UIViewController</h4>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2012/02/06/new-methods-in-uiviewcontroller-of-ios5/">iOS5中UIViewController的新方法</a> by 唐巧<br/></li>
+</ul>
+
+
+<h4 id="uitableview">UITableView</h4>
+
+
+<ul>
+<li><p><a href="http://blog.cocoabit.com/blog/2014/02/09/uitableview-gun-dong-liu-cheng-xing-you-hua/">UITableView 滚动流畅性优化</a> by 6david9<br/></p></li>
+<li><p><a href="http://beyondvincent.com/blog/2014/01/13/animation-tableview-cell/">给tableview Cell添加动画</a> by 破船<br/></p></li>
+<li><p><a href="http://beyondvincent.com/blog/2014/03/26/cookbook-moving-table-view-cells-with-a-long-press-gesture/">利用长按手势移动 Table View Cells</a> by 破船<br/></p></li>
+<li><p><a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-26-make-swipeable-table-view-cell-actions-without-going-nuts-scroll-views.md">制作一个可以滑动操作的 Table View Cell</a> by nixzhu<br/></p></li>
+<li><p><a href="http://blog.xcodev.com/archives/cant-scroll-in-tableview/">TableView中嵌套一个ScrollView有时导致ScrollView无法滚动</a> by xcodev<br/></p></li>
+</ul>
+
+
+<h4 id="uiwebview">UIWebView</h4>
+
+
+<ul>
+<li><a href="http://blog.xcodev.com/archives/no-keyboard-in-webview-of-ios5/">iOS5网页视图（UIWebView）中的输入框不能弹出键盘的问题</a> by xcodev<br/></li>
+</ul>
+
+
+<h4 id="uiactionSheet">UIActionSheet</h4>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2012/06/24/enhance-uiactionsheet/">封装同步的UIActionSheet</a> by 唐巧<br/></li>
+</ul>
+
+
+<h4 id="uikitother">其他</h4>
+
+
+<ul>
+<li><a href="http://beyondvincent.com/blog/2014/01/20/how-to-build-a-custom-control-in-ios/">如何自定义iOS中的控件</a> by 破船<br/></li>
+</ul>
+
+
+<h2 id="ios7">iOS7</h2>
+
+
+<ul>
+<li><p><a href="http://beyondvincent.com/blog/2014/01/29/ios-7-blur-effects-gpuimage/">iOS 7中实现模糊效果</a> by破船<br/></p></li>
+<li><p><a href="http://beyondvincent.com/blog/2013/11/19/122-working-with-ios-6-and-7/">iOS 7 教程：让程序同时支持iOS 6和iOS 7</a> by破船<br/></p></li>
+<li><p><a href="http://beyondvincent.com/blog/2013/11/12/121-brief-analysis-text-kit/">iOS 7 教程：浅析Text Kit</a> by破船<br/></p></li>
+<li><p><a href="http://beyondvincent.com/blog/2013/11/03/120-customize-navigation-status-bar-ios-7/">iOS 7 教程：定制iOS 7中的导航栏和状态栏</a> by破船<br/></p></li>
+<li><p><a href="http://beyondvincent.com/blog/2013/09/20/112-ios-7-additions-omg-finally/">iOS 7中的一些小修改</a> by破船<br/></p></li>
+<li><p><a href="http://nonomori.farbox.com/post/ios-7-jian-pan-dong-hua">iOS 7 键盘动画</a> by nonomori<br/></p></li>
+</ul>
+
+
+<h2 id="ios8">iOS8</h2>
+
+
+
+
+<h4 id="appextension">App Extension</h4>
+
+
+<ul>
+<li><p><a href="http://foggry.com/blog/2014/06/23/wwdc2014zhi-app-extensionsxue-xi-bi-ji/">WWDC2014之App Extensions学习笔记</a> by foggry.com<br/></p></li>
+<li><p><a href="http://www.raywenderlich.com/83809/ios-8-today-extension-tutorial">iOS 8 Today Extension Tutorial</a> by raywenderlich.com<br/></p></li>
+<li><p><a href="http://zixun.github.io/blog/2014/10/22/%3Cyi-%3Eios-8-today-extension-tutorial/">&lt;译>iOS 8 Today Extension Tutorial</a> by zixun.github.io<br/></p></li>
+</ul>
+
+
+<h2 id="memory">内存管理</h2>
+
+
+<ul>
+<li><p><a href="http://onevcat.com/2012/06/arc-hand-by-hand/">手把手教你ARC——iOS/Mac开发ARC入门和使用</a> by onevcat<br/></p></li>
+<li><p><a href="http://lldong.github.io/2011/10/20/retain-count.html">retainCount 不会为 0</a> by lldong<br/></p></li>
+</ul>
+
+
+<h2 id="block">Block</h2>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2013/07/28/a-look-inside-blocks/">谈Objective-C Block的实现</a> by 唐巧<br/></li>
+<li><a href="http://tanqisen.github.io/blog/2013/04/19/gcd-block-cycle-retain/">正确使用Block避免Cycle Retain和Crash</a> by tanqisen<br/></li>
+</ul>
+
+
+<h2 id="gcd">GCD</h2>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2012/02/22/use-gcd/">使用GCD</a> by 唐巧<br/></li>
+<li><a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">GCD 深入理解：第一部分</a> by nixzhu<br/></li>
+</ul>
+
+
+<h2 id="graphics&animation">绘图&动画</h2>
+
+
+<ul>
+<li><p><a href="http://blog.xcodev.com/archives/anti-alise-for-image-ios/">在iOS中让图片旋转时抗锯齿</a> by xcodev&lt;br</p></li>
+<li><p>[<a href="http://answerhuang.duapp.com/index.php/2013/10/17/objective-c_c99/">Objective C中C99的使用</a> by answerhuangbr/>
+*</p></li>
+</ul>
+
+
+<h1 id="uplevel">代码优化</h1>
+
+
+<ul>
+<li><p><a href="http://blog.leezhong.com/ios/2014/01/04/class-cluster.html">类簇在iOS开发中的应用</a> by无网不剩<br/></p></li>
+<li><p><a href="http://blog.leezhong.com/ios/2013/09/23/build-ios-application.html">iOS项目的目录结构和开发流程</a> by无网不剩<br/></p></li>
+<li><p><a href="http://studentdeng.github.io/blog/2014/05/09/pop-tweaks/">Facebook Pop &amp; Tweaks Demo</a> by不会开机的男孩<br/></p></li>
+</ul>
+
+
+<h2 id="runtime">runtime</h2>
+
+
+<ul>
+<li><a href="http://blog.devwu.com/develop/2014-08-15/objcruntime-explore1/">objc/runtime 探索(一)</a><br/></li>
+<li><a href="http://blog.devwu.com/develop/2014-08-17/objcruntime-explore2/">objc/runtime 探索(二))</a><br/></li>
+<li><a href="http://blog.devwu.com/develop/2014-08-18/objcruntime-explore3/">objc/runtime 探索(三))</a><br/></li>
+<li><a href="http://blog.devwu.com/develop/2014-08-19/objcruntime-explore4/">objc/runtime 探索(四))</a><br/></li>
+<li><a href="http://www.jianshu.com/p/1bde36ad9938">轻松学习之一－－Objective-C消息转发</a> by J_雨<br/></li>
+</ul>
+
+
+<h2 id="c-language">c语言</h2>
+
+
+<ul>
+<li><a href="http://www.cnblogs.com/rollenholt/articles/1907414.html">什么情况下用宏定义do{}while(0);这种结构体</a><br/></li>
+</ul>
+
+
+<h2 id="debug">调试</h2>
+
+
+<ul>
+<li><a href="http://www.starfelix.com/blog/2014/03/17/lldbdiao-shi-ming-ling-chu-tan/">LLDB调试命令初探</a> by 达叔<br/></li>
+</ul>
+
+
+<h2 id="vender">第三方库使用</h2>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2013/07/28/a-look-inside-blocks/">在iOS开发中使用FMDB</a> by 唐巧<br/></li>
+</ul>
+
+
+<h2 id="analyze">底层分析</h2>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2013/10/15/objective-c-object-model/">Objective-C对象模型及应用</a> by 唐巧<br/></li>
+</ul>
+
+
+<h2 id="storyBoard">StoryBoard</h2>
+
+
+<ul>
+<li><a href="http://blog.devtang.com/blog/2012/12/15/do-not-use-storyboard/">StoryBoard&mdash;看上去很美</a> by 唐巧<br/></li>
+</ul>
+
+
+<h2 id="reverse">逆向</h2>
+
+
+<ul>
+<li><a href="http://tweakweek.com/">TweakWeek</a> 每周一个开源tweek<br/></li>
+<li><a href="http://developer.limneos.net/">iPhone 7.0 Headers</a><br/></li>
+</ul>
+
+
+<h2 id="interview">面试</h2>
+
+
+<ul>
+<li><a href="http://onevcat.com/2013/04/ios-interview/">上级向的十个iOS面试问题</a> by onevcat<br/></li>
+</ul>
+
+
+<h2 id="tools">工具</h2>
+
+
+<ul>
+<li><p><a href="http://blog.devtang.com/blog/2012/12/02/use-cocoapod-to-manage-ios-lib-dependency/">使用CocoaPods来做iOS程序的包依赖管理</a> by 唐巧<br/></p></li>
+<li><p><a href="http://blog.csdn.net/wzzvictory/article/details/20067595">CocoaPods详解之&mdash;&mdash;制作篇</a> by wangzz<br/></p></li>
+<li><p><a href="http://girlios.github.io/blog/2014/03/16/enrolling-in-apple-developer-programs/">Enrolling in Apple Developer Programs</a> by Girl_iOS<br/></p></li>
+</ul>
+
+
+<h2 id="xiaojiqiao">技巧</h2>
+
+
+<ul>
+<li><p><a href="http://www.cocoachina.com/newbie/basic/2014/0225/7882.html">Xcode Key Bindings &amp; Gestures利用快捷键提高开发效率</a> by CocoaChina<br/></p></li>
+<li><p><a href="http://www.gitignore.io/">www.gitignore.io/</a> by gitignore<br/>
+这个网站可以自动为你生成gitignore文件，比如你输入Objective Xcode 就会为你生成正对iOS开发的gitignore文件，如果你对gitignore文件不熟，那就请翻阅&lt;Git权威指南>。</p></li>
+<li><p><a href="http://www.douban.com/note/165306479/">Chrome 快捷键 整理版 【来自豆瓣】</a> by douban<br/></p></li>
+<li><p><a href="http://segmentfault.com/a/1190000000475547">少有人知的 GitHub 使用技巧</a> by segmentfault<br/></p></li>
+</ul>
+
+
+<h2 id="pulgin">插件</h2>
+
+
+<ul>
+<li><p><a href="https://github.com/supermarin/Alcatraz">Alcatraz</a> by Github</br>
+Alcatraz是一个帮你管理Xcode插件、模版以及颜色配置的工具。它可以直接集成到Xcode的图形界面中，让你感觉就像在使用Xcode自带的功能一样.这里有一篇很好的介绍它的文章<a href="http://blog.devtang.com/blog/2014/03/05/use-alcatraz-to-manage-xcode-plugins/">使用Alcatraz来管理Xcode插件</a>
+</br></p></li>
+<li><p><a href="https://github.com/omz/ColorSense-for-Xcode">ColorSense-for-Xcode</a> by Github<br/>
+这个插件可以在编辑器上动态的渲染出你代码编写的颜色，例如在你写如下代码时它会在这段代码的右上角绘制出颜色预览，可以省去很多UI调整的时间</br>
+<img style="position:absolute; left:50%; margin-left:-375px;" src="/images/custom/post/ColorSense.png" ></p></li>
+</ul>
+
+
+<br/>
+
+
+<ul>
+<li><a href="https://github.com/ksuther/KSImageNamed-Xcode">KSImageNamed-Xcode</a> by Github<br/>
+这个工具可以帮你自动补全image的图片信息，效果非常惊艳, 预览，自动补全，提示有无@2x高清图。</br></li>
+</ul>
+
+
+<p><img style="position:absolute; left:50%; margin-left:-271px;" src="/images/custom/post/test.png" ></p>
+
+
+<br/>
+
+
+<br/>
+
+
+<br/>
+
+
+<br/>
+
+
+<br/>
+
+
+<br/>
+
+
+<br/>
+
+
+
+
+<h2 id="blog">博客</h2>
+
+
+<ul>
+<li><a href="http://girlios.github.io/">Girl_iOS</a>(萌妹子，iOS程序媛，下面的大牛博客很多都是摘自她的博客@Girl_iOS)</li>
+<li><a href="http://blog.devtang.com/">唐巧</a>(InfoQ编辑，Blogger，iOS开发，创业者，前网易员工。微信公共账号iOSDevTips创建者。)</li>
+<li><a href="http://beyondvincent.com/">破船</a>(宠辱不惊，闲看庭前花开花落。去留无意，漫随天外云卷云舒。不妄取，不妄予，不妄想，不妄求。与人方便，随遇而安)</li>
+<li><a href="http://onevcat.com/">喵神</a> (iOS/Mac,Unity3D开发者，现就职于日本创意公司Kayac，正在修行，探求创意之源)</li>
+<li><a href="http://nianxi.net/">念茜</a>(一单线程妞儿，iOS安全大牛)</li>
+<li><a href="http://www.devtalking.com/">宇轩</a>(付宇轩，80后，程序员，关注技术和人文，记录学习的点点滴滴于《程序员说》)</li>
+<li><a href="http://blog.cocoabit.com/">6david9</a>(iOS码农，攻城狮。喜欢各种有意思的东西。最近迷恋上了自行车。)</li>
+<li><a href="http://blog.t-xx.me/">txx’s blog</a>(中山大学大四翘课熬夜党 广州贴贴信息科技技术总监 高度强迫症 代码洁癖的 iOS开发者)</li>
+<li><a href="http://lldong.github.io/">lldong</a>(不详！)</li>
+<li><a href="http://yingkong1987.github.io/">yingkong1987</a>(@兔be南玻1)</li>
+<li><a href="http://blog.xcodev.com/">xcodev</a>(资深iOS开发工程师@谌启亮)</li>
+<li><a href="http://www.isaced.com/">isaced</a>(iOS Programmer@isaced)</li>
+<li><a href="http://answerhuang.duapp.com/">answerhuang</a>(iOS developer, Python fans@answer-huang)</li>
+<li><a href="http://geeklu.com/">卢克</a>(Mac，iOS开发@卢小克)</li>
+<li><a href="http://blog.csdn.net/ysy441088327">余书懿</a>(代表作:&lt;豆豆音乐> @余书懿)</li>
+<li><a href="http://wangling.me/">Creator of moke</a>(Creator of 墨客(moke.com) and Voodo(moke.com/voodo)@an00na)</li>
+<li><a href="http://iiiyu.com/">萧宸宇</a>(注定漂泊的人@Sumi-iYu)</li>
+<li><a href="http://webfrogs.me/">webfrogs</a>(iOS开发，开源爱好者 @webfrogs)</li>
+<li><a href="http://esoftmobile.com/">esoftmobile</a>(iOS开发者 esoftmobile.com @TracyYih)</li>
+<li><a href="http://blog.leezhong.com/">无网不剩</a>(iOS开发@李忠)</li>
+<li><a href="http://www.starfelix.com/">starfelix达叔</a>(不要告诉任何人你无法实现自己的梦想，包括我！@达叔是一种沧桑)</li>
+<li><a href="http://www.tanhao.me/">老谭</a>(不详，但看博客内容很牛！)</li>
+</ul>
+
+
+<h2 id="periodical">期刊</h2>
+
+
+<ul>
+<li><p><a href="http://www.objc.io/">objc.io</a> &mdash;-中文版&mdash;&ndash;> <a href="http://www.objccn.io/">objccn.io</a></p></li>
+<li><p><a href="http://nshipster.com/">nshipster.com</a> &mdash;-中文版&mdash;&ndash;> <a href="http://nshipster.cn/">nshipster.cn</a></p></li>
+<li><p><a href="http://www.raywenderlich.com/">raywenderlich.com</a></p></li>
+</ul>
+
+
+<h1 id="else">其他</h1>
+
+
+
+
+<h2 id="uidesign">UI设计</h2>
+
+
+
+
+<h4 id="sketch">Sketch</h4>
+
+
+<ul>
+<li><p><a href="http://www.zcool.com.cn/article/ZODQ1ODA=.html">酷九合金社Sketch教程系列-IOS图标（上）</a> by C9D<br/></p></li>
+<li><p><a href="http://www.zcool.com.cn/article/ZODQ1ODg=.html">酷九合金社Sketch教程系列-IOS图标（下）</a> by C9D<br/></p></li>
+<li><p><a href="http://www.ui.cn/project.php?id=31346">奇葩的Sketch教程，专治各种疑难杂症</a> by JaminWoo<br/></p></li>
+</ul>
+
+
+<h2 id="markdown">Markdown</h2>
+
+
+<ul>
+<li><a href="http://wowubuntu.com/markdown/index.html">Markdown 语法说明 (简体中文版)</a><br/></li>
+</ul>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    陈奕龙
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

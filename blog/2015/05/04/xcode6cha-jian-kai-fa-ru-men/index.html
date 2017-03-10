@@ -1,0 +1,340 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Xcode6插件开发入门 - 子循(SubCycle)</title>
+	<meta name="author" content="陈奕龙">
+
+	
+	<meta name="description" content="Xcode6插件开发入门 Xcode提供了所有你创建一个App需要的功能。但是由于其不开源以及没有制作Xcode-Plugin相关的文档，在我们需要添加一些自己的想法和功能的时候变得缺乏灵活性。
+但是我们可以通过一些非官方的手段来扩展我们自己的Xcode，并且分享给别人使用。 Xcode &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="子循(SubCycle)" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zixun.github.io/blog/2015/05/04/xcode6cha-jian-kai-fa-ru-men/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("chenyl.exe@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    记录我的技术与生活
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:chenyl.exe@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/zixun" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Xcode6插件开发入门</h1>
+	<div class="entry-content" itemprop="articleBody"><p>Xcode提供了所有你创建一个App需要的功能。但是由于其不开源以及没有制作Xcode-Plugin相关的文档，在我们需要添加一些自己的想法和功能的时候变得缺乏灵活性。
+但是我们可以通过一些非官方的手段来扩展我们自己的Xcode，并且分享给别人使用。</p>
+
+<!-- more -->
+
+
+<h2>Xcode Plug-in能做什么</h2>
+
+<p>太多了，我们可以自动生成代码注释（<a href="https://github.com/onevcat/VVDocumenter-Xcode">VVDocumenter</a>）,我们可以在代码编辑器中直接显示我们初始化的UIColor的颜色（<a href="https://github.com/omz/ColorSense-for-Xcode">ColorSense-for-Xcode</a>）,我们也可以在代码编辑器中直接显示我们要添加到UIImage的图片（<a href="https://github.com/ksuther/KSImageNamed-Xcode">KSImageNamed-Xcode</a>）,我们还可以调整控制台的颜色，修改代码样式，等等等等&hellip;.</p>
+
+<p>我们还可以用<a href="https://github.com/supermarin/Alcatraz">Alcatraz</a>来管理我们的插件，简直方便！</p>
+
+<h2>Xcode Plug-in放在哪</h2>
+
+<p>所有的Xcode Plug-in都会放在一个叫<code>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins</code>文件目录下，并且所有的插件都会以<code>.xcplugin</code>作为后缀。</p>
+
+<h2>开发自己的Xcode Plug-in</h2>
+
+<h3>准备工作</h3>
+
+<pre><code>1.前往[Xcode-Plugin-Template](https://github.com/kattrali/Xcode-Plugin-Template)下载Xcode插件开发的模板。
+2.将下载下来的template复制到 ~/Library/Developer/Xcode/Templates/Project Templates/Application Plug-in/Xcode5 Plugin.xctemplate文件夹中，如果没有对应的文件夹就自己手工创建一个。
+3.重启Xcode，当你新建一个工程的时候就可以在OSX中看到一个Application Plug-in的选项，里面有一个Xcode Plug-in模板。
+</code></pre>
+
+<p><img src="/images/custom/post/xcode6cha-jian-kai-fa-ru-men/template.png" alt="hello world" /></p>
+
+<h3>进入开发</h3>
+
+<p>我们新建一个Xcode Plug-in模板的工程，可以看到模板为我们生成了好多代码。看与你工程同名的文件的<code>initWithBundle</code>方法。阅读一下后你就可以知道模板为我们填充了一个在<code>Edit</code>中添加一个<code>Do Action</code>的按钮，点击后会回调<code>doMenuAction</code>方法。</p>
+
+<p>我们可以run一下我们的工程，你会发现启动了一个新的Xcode，因为我们做的是Xcode插件，启动的当然是Xcode，用Xcode编写Xcode的代码，是不是很有意思。试试点击新的Xcode的Edit有一个<code>Do Action</code>按钮，点击<code>Do Action</code>按钮，再回调中打个断点，看有没有回调你的方法。</p>
+
+<h4>DVTPlugInCompatibilityUUIDs</h4>
+
+<p>是的，你会发现你的回调方法木有调用，木有调用啊，什么鬼！其实这是因为你的插件不认识你正在跑的Xcode的版本，把你的Xcode版本介绍给它认识就好了。</p>
+
+<pre><code>1.打开插件工程的Info.plist,找到DVTPlugInCompatibilityUUIDs，打开这个下拉框，这里有所有你的插件认识的Xcode版本。
+2.在terminal中输入 defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID ，terminal会返回一串字符串给你，这就是你的Xcode的DVTPlugInCompatibilityUUID，把这串字符串添加到DVTPlugInCompatibilityUUIDs中即可。
+3.再跑一次Xcode，是不是可以了~
+</code></pre>
+
+<h4>窃听Xcode通知</h4>
+
+<p>因为Apple至今也没有公开Xcode Plugin的文档。所以我们需要通过一些其他的思路寻找方法。比如窃听我们在操作Xcode的时候Xcode发出的各种通知。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">[[</span><span class="n">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserver:</span><span class="n">self</span> <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">notificationLog:</span><span class="p">)</span> <span class="nl">name:</span><span class="nb">nil</span> <span class="nl">object:</span><span class="nb">nil</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>将这行代码加入到我们的工程初始化中</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">notificationLog:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="nv">notify</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span><span class="n">notify</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样我们就可以监听我们在对xcode做操作的时候xcode发出的所有通知了。跑一下，是不是通知刷刷的来了。。。</p>
+
+<h3>实现一个Xcode插件功能</h3>
+
+<h4>寻找需求</h4>
+
+<p>既然我们都知道了这么多通知，我们是不是可以通过抓取其中某一个通知动手优化下Xcode呢。现在Xcode插件辣么多，好多咱们能想到的功能，其实用心在网上google一下，都能找到。鉴于入门，那么我们来坐一个比较简单的功能吧。</p>
+
+<p>比如我们在xcode文件导航区域要显示这个文件在Finder中的位置的时候，我们需要在这个文件中右键点击，然后在展示列表中点击<code>show in finder</code>，而且这个<code>show in finder</code>按钮还没有快捷键。要是能有个快捷键能够快速打开就好了。</p>
+
+<h4>构思实现</h4>
+
+<pre><code>1.我们需要监听文件导航区域选中的文件改变时候的通知，然后保存当前选中的文件的路径
+2.我们需要新建一个NSMenuItem，然后设置我们需要的快捷键。
+3.当我们按下快捷键的时候打开我们的workspace，并且选中到指定的文件。
+</code></pre>
+
+<h4>talk is cheep，show u the code</h4>
+
+<p>1.我们需要监听文件导航区域选中的文件改变时候的通知，然后保存当前选中的文件的路径</p>
+
+<p>根据之前监听xcode通知，我们会发现一个叫<code>transition from one file to another</code>这个通知，这就是我们需要的选中文件改变时候的通知。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">notificationLog:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="nv">notify</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">notify</span><span class="p">.</span><span class="n">name</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;transition from one file to another&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">originURL</span> <span class="o">=</span> <span class="p">[[</span><span class="n">notify</span><span class="p">.</span><span class="n">object</span> <span class="nl">valueForKey:</span><span class="s">@&quot;next&quot;</span><span class="p">]</span> <span class="nl">valueForKey:</span><span class="s">@&quot;documentURL&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">originURL</span> <span class="o">!=</span> <span class="nb">nil</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">originURL</span> <span class="n">absoluteString</span><span class="p">].</span><span class="n">length</span> <span class="o">&gt;=</span> <span class="mi">7</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">self</span><span class="p">.</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">originURL</span><span class="p">.</span><span class="n">absoluteString</span> <span class="nl">substringFromIndex:</span><span class="mi">7</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们将这个通知给我们的文件路径保存下来，为什么要<code>substringFromIndex:7</code>，因为返回的URL是<code>file:///User........</code>格式的，需要切换成<code>/User...</code>的格式。</p>
+
+<p>2.我们需要新建一个NSMenuItem，然后设置我们需要的快捷键。</p>
+
+<p>这个比较简单修改下模板帮我们生成的那几行代码，加入快捷键就可以</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">NSMenuItem</span> <span class="o">*</span><span class="n">menuItem</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSApp</span> <span class="n">mainMenu</span><span class="p">]</span> <span class="nl">itemWithTitle:</span><span class="s">@&quot;Edit&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">menuItem</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">menuItem</span> <span class="n">submenu</span><span class="p">]</span> <span class="nl">addItem:</span><span class="p">[</span><span class="n">NSMenuItem</span> <span class="n">separatorItem</span><span class="p">]];</span>
+</span><span class='line'>            <span class="n">NSMenuItem</span> <span class="o">*</span><span class="n">actionMenuItem</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMenuItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="s">@&quot;Do action&quot;</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">doMenuAction</span><span class="p">)</span> <span class="nl">keyEquivalent:</span><span class="s">@&quot;F&quot;</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">actionMenuItem</span> <span class="nl">setKeyEquivalentModifierMask:</span><span class="n">NSShiftKeyMask</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">actionMenuItem</span> <span class="nl">setTarget:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">menuItem</span> <span class="n">submenu</span><span class="p">]</span> <span class="nl">addItem:</span><span class="n">actionMenuItem</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>objective-c</p>
+
+<p>关键在于这两行：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">NSMenuItem</span> <span class="o">*</span><span class="n">actionMenuItem</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMenuItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="s">@&quot;Do action&quot;</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">doMenuAction</span><span class="p">)</span> <span class="nl">keyEquivalent:</span><span class="s">@&quot;F&quot;</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">actionMenuItem</span> <span class="nl">setKeyEquivalentModifierMask:</span><span class="n">NSShiftKeyMask</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的快捷键就是<code>shift + F</code>，读者可以根据自己的方式修改。</p>
+
+<p>3.当我们按下快捷键的时候打开我们的workspace，并且选中到指定的文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">doMenuAction</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">url</span> <span class="o">=</span>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">url</span> <span class="n">stringByURLDecodingStringParameter</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSWorkspace</span> <span class="n">sharedWorkspace</span><span class="p">]</span> <span class="nl">selectFile:</span><span class="n">self</span><span class="p">.</span><span class="n">url</span> <span class="nl">inFileViewerRootedAtPath:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个就比较好理解了。把第一步保存的URL传递过去就可以，不过需要做一个URLDecoding，因为xcode给我们的是encode过的URL。</p>
+
+<h2>Xcode &ldquo;API&rdquo;</h2>
+
+<p>Xcode插件开发已经不是什么新技术了，所以也有很多开发者dump出了很多Xcode的API。大家可以按需要加入到自己的工程中使用。</p>
+
+<h3>Working with projects files</h3>
+
+<p><a href="https://github.com/appsquickly/XcodeEditor">XcodeEditor</a>有一组强大的操纵项目文件的API，比如inspect headers, list frameworks, add classes等功能。如果你要对你项目文件进行操作，千万不要忘记这个库。</p>
+
+<h3>NSTask</h3>
+
+<p><code>NSTask</code>的功能类似像terminal中执行command命令一样，非常实用。</p>
+
+<p><a href="http://www.raywenderlich.com/36537/nstask-tutorial">nstask-tutorial</a></p>
+
+<h3>Cocoa</h3>
+
+<p>是<code>Cocoa</code>，不是<code>Cocoa touch</code>，应为Xcode是MacOS上的app。所以编写Xcode插件会用到很多<code>Cocoa</code>的API，需要了解<code>Cocoa</code>编程。</p>
+
+<h2>扩展阅读</h2>
+
+<p><a href="http://studentdeng.github.io/blog/2014/02/21/xcode-plugin-fun/">Xcode5 Plugins 开发简介</a></p>
+
+<p><a href="http://www.overacker.me/blog/2015/01/25/creating-an-xcode-plugin">Creating an Xcode Plugin: A Quick-Start Guide</a></p>
+
+<p><a href="http://bits.citrusbyte.com/extending-xcode-6-with-plugins/">Extending Xcode 6 with plugins</a></p>
+
+<p><a href="http://www.fantageek.com/1297/how-to-create-xcode-plugin/">How to create Xcode plugin</a></p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    陈奕龙
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

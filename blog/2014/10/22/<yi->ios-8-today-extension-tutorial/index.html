@@ -1,0 +1,712 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title><译>iOS 8 Today Extension Tutorial - 子循(SubCycle)</title>
+	<meta name="author" content="陈奕龙">
+
+	
+	<meta name="description" content="iOS 8 Today Extension Tutorial 原文链接:iOS 8 Today Extension Tutorial Ray提醒: 这篇文章可以说是一个精简版，它是从iOS8 by Tutirials这本书中摘录的一个章节。iOS8 by Tutirials是我们iOS8 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="子循(SubCycle)" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zixun.github.io/blog/2014/10/22/%3Cyi-%3Eios-8-today-extension-tutorial/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("chenyl.exe@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    记录我的技术与生活
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:chenyl.exe@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/zixun" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name"><译>iOS 8 Today Extension Tutorial</h1>
+	<div class="entry-content" itemprop="articleBody"><p><strong>原文链接:</strong><a href="http://www.raywenderlich.com/83809/ios-8-today-extension-tutorial">iOS 8 Today Extension Tutorial</a></p>
+
+<p><strong>Ray提醒: </strong> 这篇文章可以说是一个精简版，它是从<a href="http://www.raywenderlich.com/store/swift-tutorials-bundle">iOS8 by Tutirials</a>这本书中摘录的一个章节。<a href="http://www.raywenderlich.com/store/swift-tutorials-bundle">iOS8 by Tutirials</a>是我们<a href="http://www.raywenderlich.com/82230/introducing-ios-8-feast">iOS8 Feast</a>套餐中的一部分。通过这篇文章我们可以看到书中的内容是怎么样的。希望你喜欢！</p>
+
+<p>iOS8介绍了一种新的概念 <code>App Extensions</code>:一种在操作系统上与其他应用共享应用程序功能的方式！</p>
+
+<p>这些<code>Extensions</code>中有一种叫<code>Today Extensions</code>，又称<code>Widgets</code>。它可以让你在<code>Notification Center</code>中呈现信息。这是一种很好的方式向用户直接的提供他感兴趣的最新的信息。</p>
+
+<p>在这个教程中，你会编写一个<code>Today Extension</code>用来渲染<a href="https://bitcoin.org/en/">bitcoin.org</a>中比特币基于美元的当前市场价格。</p>
+
+<!-- more -->
+
+
+<h2>介绍比特币</h2>
+
+<p>如果你对比特币还不熟悉，那用一句很短的话来介绍的话就是比特币是一种还处于初期的数字加密货币。除了可以用来作P2P的交换和购买外，比特币交易还允许用户将比特币交易成另外一种数字加密货币，比如狗狗币和莱特币，以及像美金和欧元这样的常用货币。</p>
+
+<h2>介绍Crypticker项目</h2>
+
+<p>一旦你开始写一个<code>Extension</code>，你必须先需要一个<code>载体应用</code>（host app）来做扩展；看看<code>Crypticker</code>项目吧。</p>
+
+<p><code>Crypticker</code>是用来展示当前的比特币价格、当前价格与昨日价格的区别和历史价格图表的一个简单的App。图表包括30天的历史价格；滑动你的手指可以看到过去特定的某天的准确价格。</p>
+
+<p><code>Extension</code>会包含所有这些功能，除了点击图表可以看到特定某天的价格。<code>Today Extension</code>也有局限性，尤其是当它在滑动(<code>swipe</code>)的时候，<code>Swipe Gesture</code>总是在<code>Notification Center</code>中的<code>Today</code>和<code>Notifications</code>这两个<code>sections</code>里被触发，所以他没有真的做到提供了最好的或者最可靠的用户体验。</p>
+
+<h2>入门指南</h2>
+
+<p>我们从下载<a href="http://cdn4.raywenderlich.com/wp-content/uploads/2014/09/crypticker-swift-starter-GM.zip">Crypticker起始项目</a>入手。这个项目包含整个如上面描述的<code>Crypticker</code> app。我们的教程不会关注这个项目本身的开发，所以你愉快又惊讶的发现这个教程是如此的简洁。毕竟，你要写一个<code>Extension</code>，而不是整个app。
+编译运行。请注意你需要一个可以工作的网络来链接<code>web service</code>以及拉取实时的价格。</p>
+
+<p>(译者注：这个App还是Swift1.0的代码，可以根据Xcode的提示将代码修改成符合Swift1.1，主要是Swift1.1加入了可失败初始化功能)</p>
+
+<p align="center">
+    <img style="width:444px;height:788px;" src="/images/custom/post/ios-8-today-extension-tutorial/CryptickerApp-1.png" >
+</p>
+
+
+<br/>
+
+
+<p>App看起来非常像上面的屏幕截图；当然显示的数据是基于当前的比特币市场怎么样。触碰在底部附近的图表会绘制一条线以及显示遮天相关的价格。</p>
+
+<h2>BTC Widget</h2>
+
+<p>为了不熟悉的人更好的理解，BTC就是比特币的缩写。很像USD就代表美元。<code>Today Extension</code>会渲染出一个<code>Crypticker</code>主视图的缩小版本。</p>
+
+<p>理论上，<code>Crypticker</code>有能力展示多种加密货币的价格，但是你的<code>Extension</code>是对BTC的特制版。因此，它的名字应该叫<code>BTC Widget</code>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Note: Extensions,就其本质而言，只有一个目的。如果你想要提供出你另一个数字加密货币的信息，比如狗狗币（Dogecoin），最好的方法是针对你的App打第二个widget的包或者适当的设计你的UI，也许就像股票Widget。</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这篇教程的结尾，你的<code>Today Extension</code>会看起来像这样:</p>
+
+<p align="center">
+    <img style="width:275px;height:488px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widget-2.png" >
+</p>
+
+
+<br/>
+
+
+<h3>添加一个Today Extension target</h3>
+
+<p>所有的<code>Extention</code>被包装成一个和他们载体工程隔离的<code>binary</code>。所以你需要为你的<code>Crypticker</code>工程添加一个<code>Today Extention</code>的<code>target</code>。</p>
+
+<p>在Xcode的<code>Project Navigator</code>中，选中<code>Crypticker project</code>，然后选择<code>Editor\Add Target…</code>来添加一个新的<code>target</code>。当模板选择器出现后，选择<code>iOS\ Application Extension</code>下的<code>Today Extension</code>。点击<code>Next</code>。</p>
+
+<p align="center">
+    <img style="width:700px;height:411px;" src="/images/custom/post/ios-8-today-extension-tutorial/AddTarget-3-700x411.png" >
+</p>
+
+
+<br/>
+
+
+<p>设置<code>Product Name</code>为<code>BTC Widget</code>，然后验证<code>Language</code>为<code>Swift</code>，<code>Project</code>为<code>Crypticker</code>，<code>Embed in Application</code>也是<code>Crypticker</code>。点击<code>Finish</code>。</p>
+
+<p align="center">
+    <img style="width:700px;height:413px;" src="/images/custom/post/ios-8-today-extension-tutorial/AddTarget-4-700x413.png" >
+</p>
+
+
+<br/>
+
+
+<p>当提示激活<code>BTC Widget``scheme</code>的时候.就像文本指示器一样，会为你创建另一个<code>Xcode``scheme</code>。</p>
+
+<p>恭喜！现在<code>BTC Widget</code>会展示在你的<code>targets</code>的列表中。</p>
+
+<p align="center">
+    <img style="width:250px;height:250px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AddTarget-5-250x250.png" >
+</p>
+
+
+<br/>
+
+
+<p>确保你选中了<code>BTC Widget</code>target，选择<code>General</code>标签，然后按下在<code>Linked Frameworks and Libraries</code>下的<code>+</code>按钮。</p>
+
+<p align="center">
+    <img style="width:480px;height:294px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-LinkFramework-6-480x294.png" >
+</p>
+
+
+<br/>
+
+
+<p>选中<code>CryptoCurrencyKit.framework</code>然后点击<code>Add</code>。</p>
+
+<p>CryptoCurrencyKit是一个在<code>Crypticker app</code>中使用的用来从网络上获取货币价格的自定义的<code>framework</code>。你很幸运，有个难以置信般善良和体贴的程序猿模块化了<code>Crypticker</code>的代码到<code>framework</code>，所以它可以在多个<code>target</code>下共享 :]</p>
+
+<p>为了在载体工程和它的extensions质检共享代码，你必须使用自定义<code>framework</code>。如果你不这么做，你会发现你重复撰写了很多代码以及违反了软件工程中一个很重要的原则：<code>DRY- or，Dont Repeat Yourself</code>，我再说一次：<code>Dont Repeat Yourself</code>（不要重复发明轮子）</p>
+
+<p>现在，你已经准备好开始实现<code>extension</code>了。</p>
+
+<p>注意，现在有一个以你新的<code>target</code>命名的文件组在你项目的<code>Navigator</code>中，<code>BTC Widget</code>。这是<code>Today Extension</code>代码默认分组存放的地方。</p>
+
+<p>展开这个文件组，你会看到这里有一个<code>view controller</code>，一个<code>storyboard</code>文件和一个<code>Info.plist</code>文件。它的<code>target</code>配置信息也告诉他去<code>MainInterface.storyboard</code>加载他的<code>interface</code>，<code>MainInterface.storyboard</code>包含一个指定class为 <code>TodayViewController.swift</code>的 <code>ViewController</code>。</p>
+
+<p align="center">
+    <img style="width:274px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-ListofFiles-7-274x320.png" >
+</p>
+
+
+<br/>
+
+
+<p>你会发现有一些你期望看到的文件在<code>Today Extension</code>模板中却消失不见了。比如说<code>app delegate</code>。记住所有的Extension都运行在另外一个载体工程的内部，所以他们和传统的app的生命周期不一样。</p>
+
+<p>本质上，Extension的生命周期是被映射在<code>TodayViewController</code>的生命周期上的。</p>
+
+<p>打开<code>MainInterface.storyboard</code>。你会看到一个带着明亮的<code>Hello World``label</code>的深色的<code>View</code>。为了与通知中心的暗色调协调，当<code>Today Extension</code>有一个清晰透明的背景和一个明亮或者艳丽的文本时是最清晰易读的。</p>
+
+<p>确保<code>BTC Widget</code>scheme在<code>Xcode</code>的<code>toolbar</code>中被选中，然后编译运行。这时会出现一个窗口来问你哪一个app需要运行。Xcode正在问你哪个载体应用需要运行。选择<code>Today</code>。这会告诉你的iOS打开通知中心的<code>Today</code>视图。它会依次展开你的<code>Widget</code>。</p>
+
+<p align="center">
+    <img style="width:349px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-PickAppToRun-8-349x320.png" >
+</p>
+
+
+<br/>
+
+
+<p>这也会附加<code>Xcode</code>的调试器到<code>widget</code>的进程中。</p>
+
+<p align="center">
+    <img style="width:180px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-WidgetWithNothing-9-180x320.png" >
+</p>
+
+
+<br/>
+
+
+<p>看你的插件，碉堡了，对不对?虽然这是一个超级刺激的东西，但<code>widget</code>也需要一点工作。是时候让它做一些有趣的事了。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Note:你可能遇到在运行Widget的时候控制台打印出很多Auto Layout的错误。这是一个Xcode模板的问题，会有希望Apple在将来解决他。不要担心，大胆的添加AutoLayout约束到你的interface上。
+</span><span class='line'>（译者注：个人感觉还是纯代码靠谱，清晰，一目了然，版本冲突成本低）</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>建立接口</h3>
+
+<p>打开<code>MainInterface.storyboard</code>然后删除那个label。在<code>Size Inspector</code>中设置view的高为150pts，宽为320pts。从<code>Object Library</code>拖出一个<code>Button</code>，两个<code>Label</code>和一个<code>View</code>到你的<code>ViewController</code>的<code>view</code>上。</p>
+
+<ul>
+<li>将其中一个label放在左上角，在<code>Attributes Inspector</code>中设置他的<code>Text</code>为<code>$592.12</code>，<code>Color</code>为<code>Red: 66, Green: 145，Blue: 211</code>。这个label会用来显示当前的市场价格。</li>
+<li>将另外一个label放在你刚刚设置的label的右边，但在右边留出一个button的空间。在<code>Attributes Inspector</code>中设置他的<code>Text</code>为<code>+1.23</code>，<code>Color</code>为<code>Red: 133, Green: 191, Blue: 371</code>。这个会哦你过来显示昨天和当前的价格的不同。</li>
+<li>将button移动到视图的右上方。在<code>Attributes Inspector</code>中设置他的<code>Image</code>为<code>caret-notification-center</code>，删除他的<code>Title</code>。</li>
+<li>最后，将空的view放在两个label和button的下面，拉伸它直到它的底部和边缘和<code>containing view</code>吻合，设置他的<code>Height</code>为<code>98</code>.在<code>Attributes Inspector</code>中设置他的<code>Background</code>为<code>Clear Color</code>，然后在<code>Identity Inspector</code>中设置他的<code>Class</code>为<code>JBLineChartView</code>。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Note: 当你在打字的时候Xcode会猜测你可能输入的一个叫 JBLineChartDotView 的class，确保你选择了JBLineChartView</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在视图和<code>Outline</code>看起来像这样：</p>
+
+<p align="center">
+    <img style="width:480px;height:183px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-DocumentOutline-10-480x183.png" >
+</p>
+
+
+<br/>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Note: 为了本书的清晰度的目的展示在这里的View是白色背景的。你的视图实际上会和通知中心一样有一个深色的背景色。</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不要担心页面的布局，你马上就会通过适当的定义布局来添加AutoLayout约束。</p>
+
+<p>现在展开在<code>Project Navigator</code>的<code>Crypticker</code>组，选中<code>Images.xcassets</code>。在<code>File Inspector</code>中勾选<code>BTC Widget</code>将其添加到extension的target上。
+这样Xcode就会将<code>Images.xcassets</code>从你的<code>Crypticker</code>target上添加到<code>BTC Widget</code>的target上；这是你的button使用的<code>caret-notification-center</code>图片存放的地方。如果你在载体app和widget上有重复的image assets，这是一个很好的共享方式。这可以通过不添加已经在使用的图片来减少App膨胀。</p>
+
+<p align="center">
+    <img style="width:480px;height:273px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AssetCatalog-11-480x273.png" >
+</p>
+
+
+<br/>
+
+
+<p>返回到<code>MainInterface.storyboard</code>，打开<code>Assistant Editor</code>。确保<code>TodayViewController.swift</code>是它的active file。将下面的代码添加到<code>TodayViewController.swift</code>的顶部：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">import</span> <span class="no">CryptoCurrencyKit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是用来导入CryptoCurrencyKit framework。
+接下来，你需要像这样更新他的类声明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">TodayViewController</span><span class="p">:</span> <span class="no">CurrencyDataViewController</span><span class="p">,</span> <span class="no">NCWidgetProviding</span> <span class="p">{</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这会让<code>TodayViewController</code>成为<code>CurrencyDataViewController</code>的一个子类，确保他符合<code>NCWidgetProviding</code>协议。</p>
+
+<p><code>CurrencyDataViewController</code>是包含在<code>CryptoCurrencyKit</code>中也被<code>Crypticker</code>载体应用的第一个视图使用的Controller。由于Widget和App会通过UIViewController展示相似的信息，他会把可重用的组件放到一个superclass中，然后按不同的需求来做子类化。</p>
+
+<p><code>NCWidgetProviding</code>是<code>Widget</code>特有的接口。有两个接口的方法需要你来实现。</p>
+
+<p>按住<code>Ctrl</code>，从IB的Button拖动鼠标到类声明下。在弹出的对话框中确保<code>Connection</code>设置为<code>Outlet</code>，<code>Type</code>设置为<code>UIButton</code>，在<code>Name</code>中输入<code>toggleLineChartButton</code>后点击<code>Connect</code>。</p>
+
+<p align="center">
+    <img style="width:480px;height:192px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-WireToggleButton-480x192.png" >
+</p>
+
+
+<br/>
+
+
+<p>然后还是按住Ctrl，这次从IB的Button拖动鼠标到类的底部。在弹出的对话框中改变<code>Connection</code>值为<code>Action</code>，设置<code>Type</code>为<code>UIButton</code>，在<code>Name</code>中输入<code>toggleLineChart</code>后点击<code>Connect</code>。</p>
+
+<p align="center">
+    <img style="width:480px;height:196px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-WireUpAction-480x196.png" >
+</p>
+
+
+<br/>
+
+
+<p><code>TodayViewController</code>是<code>CurrencyDataViewController</code>的子类，<code>CurrencyDataViewController</code>有三个<code>outlet</code>：<code>price label</code>, <code>price change label</code> 和 <code>line chart view</code>。你现在需要把他们联通起来。在<code>Document Outline</code>中按住<code>Ctrl</code>，从<code>Today View Controller</code>拖拽到<code>price label</code>(设置他的text为$592.12).在弹出框中选中<code>priceLabel</code>来建立连接。对另外一个label也做重复的操作，选中弹出框中的<code>priceChangeLabel</code>.最后对 <code>Line Chart View</code>做同样的操作，在弹出框中选中<code>lineChartView</code>。</p>
+
+<p align="center">
+    <img style="width:480px;height:222px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-WiringMiscThingsUp-480x222.png" >
+</p>
+
+
+<br/>
+
+
+<h3>Auto Layout</h3>
+
+<p>为了你的Widget可以自适应，你就会需要对它设置<code>Auto Layout</code>的约束。iOS8有一个新的自适应布局的概念。大意是视图可以被设计成各自有一个单独的布局，并且这个布局可以在各种各样的屏幕大小上工作。视图被设计成可以在未来以及不知道材料的设备上都可以自适应。</p>
+
+<p>其中一个你要添加的约束是用来显示和隐藏我们的图表以及用来帮助定义Widget整体的高度。通知中心会依赖于你定义的适当的高度来显示你的Widget。</p>
+
+<p>选中$592.12这个label，然后选择<code>Editor\Size to Fit Content</code>。如果<code>Size to Fit Content</code>选项不在你的菜单中，取消选中这个label，然后再次选中重试一遍。Xcode有的时候会抽风。接下来，使用在storyboard画布下的<code>Pin</code>按钮。分别钉住<code>Top</code>和<code>Leading</code>的空间为8和16。确保<code>Constrain to margins</code>处于关闭状态。</p>
+
+<p align="center">
+    <img style="width:208px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-1-208x320.png" >
+</p>
+
+
+<br/>
+
+
+<p>现在选中+1.23这个label，再次选中<code>Editor\Size to Fit Content</code>。然后使用<code>Pin</code>按钮，钉住<code>Top</code>和<code>Trailing</code>空间都为8.</p>
+
+<p align="center">
+    <img style="width:209px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-2-209x320.png" >
+</p>
+
+
+<br/>
+
+
+<p>选中那个Button，使用<code>Pin</code>按钮，钉住他的<code>Top</code>和<code>Trailing</code>两个的空间为0，以及他的Button空间为8。再钉住他的<code>Width</code>和<code>Height</code>都为44.确保<code>Constrain to margins</code>处于关闭状态。</p>
+
+<p align="center">
+    <img style="width:206px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-3-206x320.png" >
+</p>
+
+
+<br/>
+
+
+<p>你需要减小Button的底部空间约束的优先级。选中button，然后打开<code>Size Inspector</code>, 定位到<code>Bottom Space to</code>：约束列表的约束，点击<code>Edit</code>然后改变他的<code>Priority</code>为250.</p>
+
+<p>通过降低优先级你被<code>Auto Layout</code>系统允许打破他认为必要的约束。250是一个被设置给所有的约束优先级的默认以及必须的且碰巧小于1000的任意值。在折叠状态下这个约束需要被打破。通过设置不同优先级的约束你暗示系统当发生冲突的时候哪一个约束最先或者最后打破。</p>
+
+<p align="center">
+    <img style="width:480px;height:303px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-4-480x303.png" >
+</p>
+
+
+<br/>
+
+
+<p>最后，选中<code>Line Chart View</code>。使用<code>Pin</code>按钮，钉住他的<code>Leading</code>, <code>Trailing</code>和<code>Bottom</code>三个空间为0以及他的高度为98。</p>
+
+<p align="center">
+    <img style="width:209px;height:320px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-5-209x320.png" >
+</p>
+
+
+<p>从<code>Document Outline</code>中选中视图控制器的View，然后选择<code>Editor\Resolve Auto Layout Issues\All Views\Update Frames</code>.这会通过更新视图的frame来匹配他们的约束，从而修复在画布上的任何<code>Auto Layout</code>的警告。如果<code>Update Frames</code>不可用，那么你的一切都狠完美，这是不必要的运行。</p>
+
+<p>完成了你的所有的约束后，最后一步就是为<code>Line Chart View</code>的高度创建一个outlet的约束。在<code>Document Outline</code>中找到<code>Line Chart View</code>然后点击显示的三角形。</p>
+
+<p>然后点击三角形，找到我们需要的高度约束。选中他，然后按住Ctrl，拖拽到 <code>Assistant Editor</code>，放在其他outlet的下面。在弹出框中确保<code>Connection</code>被设置为<code>Outlet</code>，在<code>Name</code>中输入<code>lineChartHeightConstraint</code>。点击<code>Connect</code>。</p>
+
+<p align="center">
+    <img style="width:480px;height:190px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-AutoLayout-6-480x190.png" >
+</p>
+
+
+<h3>实现TodayViewController.swift</h3>
+
+<p>现在接口已经确立了，而且所有的东西都已经连接上，在<code>Standard Editor</code>中打开 <code>TodayViewController.swift</code>。
+你会发现你在与一个普通的UIViewController的子类打交道。很欣慰，对不对？一会儿后你会遇到<code>NCWidgetProviding</code>协议中的一个叫做<code>widgetPerformUpdateWithCompletionHandler</code>的方法。在这个教程的结尾你会学到更多与它相关的东西。</p>
+
+<p>这个<code>ViewController</code>主要负责显示当前的价格，价格的区别，响应button的点击和在line chart中显示价格的历史。</p>
+
+<p>在<code>TodayViewController</code>的顶部定义一个属性用来跟踪线形图（line chart）是否可见：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">var</span> <span class="n">lineChartIsVisible</span> <span class="o">=</span> <span class="kp">false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在用下面的实现替换掉<code>viewDidLoad()</code>的模板代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">override</span> <span class="n">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">super</span><span class="o">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>  <span class="n">lineChartHeightConstraint</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">lineChartView</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">lineChartView</span><span class="o">.</span><span class="n">dataSource</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">priceLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span>
+</span><span class='line'>  <span class="n">priceChangeLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法会做以下几件事情：</p>
+
+<pre><code>1.设置线形图的height约束的约束值为0，所以线形图默认是hidden的。
+2.设置线形图的dataSource和delegate为self。
+3.设置一些占位文案在两个label上。
+</code></pre>
+
+<p>还是在<code>TodayViewController</code>中，添加如下方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">override</span> <span class="n">func</span> <span class="n">viewDidAppear</span><span class="p">(</span><span class="ss">animated</span><span class="p">:</span> <span class="no">Bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">super</span><span class="o">.</span><span class="n">viewDidAppear</span><span class="p">(</span><span class="n">animated</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fetchPrices</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="kp">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">updatePriceLabel</span><span class="p">()</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">updatePriceChangeLabel</span><span class="p">()</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">updatePriceHistoryLineChart</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中的<code>fetchPrices</code>方法是在<code>CurrencyDataViewController</code>中定义的，他是一个可以异步调用block。这个方法会向我们在这个教程开始的时候提到的<code>web-service</code>发送一个请求来获取比特币的价格信息。</p>
+
+<p>在方法的实现块中更新所有的label和线形图。更新方法也在父类中为你定义好了。他们通过<code>fetchPrices</code>对需要的值做一个简单的检索以及合理的格式化后用来显示。</p>
+
+<p>由于Widget的设计，你还需要实现<code>widgetMarginInsetsForProposedMarginInsets</code>方法用来提供自定义的 <code>margin insets</code>，添加如下代码到<code>TodayViewController</code>中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">func</span> <span class="n">widgetMarginInsetsForProposedMarginInsets</span>
+</span><span class='line'>  <span class="p">(</span><span class="ss">defaultMarginInsets</span><span class="p">:</span> <span class="no">UIEdgeInsets</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="no">UIEdgeInsets</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="no">UIEdgeInsetsZero</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Widget默认有一个很大的<code>left margin</code>，这在Apple很多的默认Widget上是恨明显的。如果你想要填充整个通知中心的宽度，你必须实现这个方法并且返回<code>UIEdgeInsetsZero</code>，他会把所有的边的<code>margin insets</code>都转化为0。</p>
+
+<p>现在是时候看看你到目前为止都有些啥了。选中<code>BTC Widget</code>这个<code>Scheme</code>。编译运行。当app运行后提示的时候选择<code>Today</code>。</p>
+
+<pre><code>*如果通知中心没有显示，那么在屏幕的顶部用手指向下滑动来激活它。
+*如果Widget没有在通知中心显示，你需要通过编辑菜单来添加它。在今日视图的底部你会看到编辑按钮。点击按钮展开所有安装在系统中的Widget。在这里你可以随心所欲的enable, disable以及re-order他们。如果BTC Widget没有处于enable状态，则enable他。
+</code></pre>
+
+<p align="center">
+    <img style="width:480px;height:164px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widget-Almost1-480x164.png" >
+</p>
+
+
+<p>屌爆了，有木有！你的Widget现在已经在通知中心实时的显示比特币的价格。但是你可能已经意识到了一个问题。按钮不能工作以及看不到线形图。</p>
+
+<p align="center">
+    <img style="width:480px;height:329px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-YUNO.png" >
+</p>
+
+
+<p>接下来，你要为你添加的button实现<code>toggleLineChart</code>方法，用来展开widget的视图并且显示线形图。就像方法名说的一样，这个button就像一个转换键一样；他也会折叠视图从而隐藏图表。</p>
+
+<p>用下面的代码替换空的<code>toggleLineChart</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@IBAction</span> <span class="n">func</span> <span class="n">toggleLineChart</span><span class="p">(</span><span class="ss">sender</span><span class="p">:</span> <span class="no">UIButton</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">lineChartIsVisible</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">lineChartHeightConstraint</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">transform</span> <span class="o">=</span> <span class="no">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">toggleLineChartButton</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+</span><span class='line'>    <span class="n">lineChartIsVisible</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">lineChartHeightConstraint</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="mi">98</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">transform</span> <span class="o">=</span> <span class="no">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="no">CGFloat</span><span class="p">(</span><span class="mi">180</span><span class="o">.</span><span class="mi">0</span> <span class="o">*</span> <span class="no">M_PI</span><span class="o">/</span><span class="mi">180</span><span class="o">.</span><span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">toggleLineChartButton</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+</span><span class='line'>    <span class="n">lineChartIsVisible</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法用来操纵线形图的高度约束，从来约束他的显示。它也对button有一个旋转变化，所有它可以准确的反应出图表的可见度。</p>
+
+<p>约束更新后，你必须重新加载图表的数据，以便它在新的约束上重新绘制。</p>
+
+<p>你会在<code>viewDidLayoutSubviews</code>上做这些。添加如下代码到<code>TodayViewController</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">override</span> <span class="n">func</span> <span class="n">viewDidLayoutSubviews</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">super</span><span class="o">.</span><span class="n">viewDidLayoutSubviews</span><span class="p">()</span>
+</span><span class='line'>  <span class="n">updatePriceHistoryLineChart</span><span class="p">()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>确保BTC Widget这个scheme被选中。编译运行。当App运行的时候出现提示就选择<code>Today</code>。</p>
+
+<p>在左图，你会看到当图表隐藏的时候widget是如何展示的。在右图，你会看到当图表打开时widget是如何展示的。不是很寒酸！</p>
+
+<p align="center">
+    <img style="width:480px;height:144px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widet-Almost2-480x144.png" >
+</p>
+
+
+<p>添加如下代码到<code>TodayViewController</code>，你会拥有一个快速更新的线颜色以及目光尖锐的widget：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">override</span> <span class="n">func</span> <span class="n">lineChartView</span><span class="p">(</span><span class="ss">lineChartView</span><span class="p">:</span> <span class="no">JBLineChartView</span><span class="o">!</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">colorForLineAtLineIndex</span> <span class="ss">lineIndex</span><span class="p">:</span> <span class="no">UInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">UIColor</span><span class="o">!</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="no">UIColor</span><span class="p">(</span><span class="ss">red</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mi">17</span><span class="p">,</span> <span class="ss">green</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mi">49</span><span class="p">,</span>
+</span><span class='line'>      <span class="ss">blue</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mi">82</span><span class="p">,</span> <span class="ss">alpha</span><span class="p">:</span> <span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>确保当前的scheme依旧选中，编译运行。当app运行的时候出现提示就选择<code>Today</code>。</p>
+
+<p align="center">
+    <img style="width:480px;height:286px;" src="/images/custom/post/ios-8-today-extension-tutorial/BTC-Widet-Done-480x286.png" >
+</p>
+
+
+<p>你最后要做的就是通过允许系统来创建一个快照，当屏幕关闭的时候添加对Widget更新视图的支持。系统会定期的帮助你的widget保持最新。</p>
+
+<p>用下面的代码替换掉<code>widgetPerformUpdateWithCompletionHandler</code>现存的实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">func</span> <span class="n">widgetPerformUpdateWithCompletionHandler</span><span class="p">(</span><span class="ss">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="no">NCUpdateResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">fetchPrices</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="kp">nil</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">updatePriceLabel</span><span class="p">()</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">updatePriceChangeLabel</span><span class="p">()</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">updatePriceHistoryLineChart</span><span class="p">()</span>
+</span><span class='line'>      <span class="n">completionHandler</span><span class="p">(</span><span class="o">.</span><span class="n">NewData</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">completionHandler</span><span class="p">(</span><span class="o">.</span><span class="n">NoData</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法做以下几件事情：</p>
+
+<pre><code>*他通过调用fetchPrices来从网络服务中获取当前的价格数据。
+*如果没有错误，接口就会更新数据。
+*最后 - 就像NCWidgetProviding协议要求的一样 - 方法调用系统提供的带着.NewData枚举的block。
+*发生错误的时候，block会带着.Failed枚举调用。这会告诉系统没有新的可用的数据，用现存的快照吧，亲！
+</code></pre>
+
+<p>你可以在<a href="http://cdn3.raywenderlich.com/wp-content/uploads/2014/09/crypticker-swift-final-GM.zip">这里</a>下载最后的工程.</p>
+
+<h3>现在去干哈</h3>
+
+<p>iOS8通知中心是你自己个人的<code>playground</code>！Widget在一些其他的手机操作系统上早就已经有了，Apple最终提供给你一个创造他们的能力。</p>
+
+<p>作为一个有进取心的开发者，你可能想要再看看你现在的app，思考怎么用widget去提升他们。利用widget的可能性更进一步想象新的app的idea。</p>
+
+<p>如果你喜欢学习更多关于创建其他类型的iOS8的App扩展。看看我们的书 <a href="http://www.raywenderlich.com/?page_id=74805">iOS 8 by Tutorials</a>，这里你可以学习关于<code>Photo Extensions</code>, <code>Share Extensions</code>, <code>Action Extensions</code>以及更多的知识。</p>
+
+<p>我们迫不及待的想看你能想出什么东西来了，希望你的Widget尽快的在我们的通知中心的顶部！</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    陈奕龙
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

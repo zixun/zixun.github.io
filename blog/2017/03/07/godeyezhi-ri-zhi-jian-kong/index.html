@@ -1,0 +1,767 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>GodEye之日志监控 - 子循(SubCycle)</title>
+	<meta name="author" content="陈奕龙">
+
+	
+	<meta name="description" content="GodEye之日志监控 日志几乎是我们每一个iOS开发者每一天都要打交道的东西，比如运行时想看一下某个变量的值，那就NSLog()一下;当然，在Swift语言下我们还有另外一种选择,那就是print()方法。都是帮助我们方便调试与分析的工具。 开源社区也为我们贡献了很多非常优秀的日志框架， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="子循(SubCycle)" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zixun.github.io/blog/2017/03/07/godeyezhi-ri-zhi-jian-kong/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("chenyl.exe@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    记录我的技术与生活
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:chenyl.exe@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/zixun" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">GodEye之日志监控</h1>
+	<div class="entry-content" itemprop="articleBody"><p>日志几乎是我们每一个iOS开发者每一天都要打交道的东西，比如运行时想看一下某个变量的值，那就<code>NSLog()</code>一下;当然，在Swift语言下我们还有另外一种选择,那就是<code>print()</code>方法。都是帮助我们方便调试与分析的工具。</p>
+
+<!-- more -->
+
+
+<p>开源社区也为我们贡献了很多非常优秀的日志框架，比如OC中大名鼎鼎的<code>CocoaLumberjack</code>，有兴趣的同学可以移步<a href="https://github.com/CocoaLumberjack/CocoaLumberjack">https://github.com/CocoaLumberjack/CocoaLumberjack</a></p>
+
+<p>开源日志框架是为了我们方便极了日志而开发的，比如我们可以调用CocoaLumberjack的<code>DDLogInfo("Info")</code>来记录一个<code>Info</code>类型的日志，用<code>DDLogError("Error")</code>来记录一个<code>Error</code>类型的日志。不同的日志记录框架我们需要调用的API也不一样，但是他们都有一个共同的特点，就是到最后都会调用系统的<code>NSLog()</code>方法。</p>
+
+<p>因此我们需要做日志全自动监控的话，可以从<code>NSLog()</code>方法入手。这里我们会分两方面来讲，因为在iOS上我们不单单可以用<code>NSLog()</code>来记录日志，在Swift语言下还可以用<code>print()</code>方法来记录我们的日志。这一章我们会先介绍如何选择和优化我们监控<code>NSLog()</code>日志的方案，然后比较<code>NSLog()</code>与<code>print()</code>的不同点。然后再介绍Swift下特有的<code>print()</code>方法的处理。</p>
+
+<h1>0 前言</h1>
+
+<p>该文章摘自笔者撰写的一本iOS技术书籍<a href="https://www.qingdan.us/product/25">iOS监控编程</a>。</p>
+
+<p>这是一本介绍iOS监控编程的书籍,内容涉及日志监控，监控崩溃，监控网络，监控卡顿，监控硬件，内存泄漏监控等方面。所有的功能都是通过自行编程实现，而不是通过使用第三方工具。每个章节记录了功能的实现细节，以及笔者一路探索过来的心路历程。当然，笔者后续依旧会寻求与探索新的监控方向，一旦有所得都会更新到本书的章节中。</p>
+
+<p>这本书是笔者的开源工具<a href="https://github.com/zixun/GodEye">GodEye</a>的产出物，GodEye能全自动，零代码入侵，一行代码接入来监控应用的日志，卡顿，崩溃，网络，内存泄漏，CPU以及内存使用率，帧率等信息。</p>
+
+<p><img src="/images/custom/post/2017-03-07-godeyezhi-ri-zhi-jian-kong/cover.jpg" alt="hello world" /></p>
+
+<h1>1 监控NSLog日志</h1>
+
+<p>该章节涉及到的开源库<code>ASLEye</code>,大家可以先通过<a href="https://github.com/zixun/ASLEye">https://github.com/zixun/ASLEye</a>下载下来，一遍对照开源代码一遍阅读该章节。</p>
+
+<p>可能你在翻开该章节前已经有了自己的方案了，因为这道题并没有唯一解，我们只是要找出最优解。下面让我们来逐一分析监控NSLog日志的方案。</p>
+
+<h2>自定义API</h2>
+
+<p>可能你和我一样，第一个想到的就是模仿<code>CocoaLumberjack</code>，咱整一套自己的API，让大家都来调咱的API不完事了么，多省事。比如<code>LogEyeInfo("Info")</code>就是<code>Info</code>类型的日志，<code>LogEyeError("Error")</code>就是<code>Error</code>类型的日志。</p>
+
+<p>哈哈，咱是省事了，但是接入咱日志监控的开发者不干了，或许他正在和CocoaLumberjack愉快的玩耍，你侬我侬，你突然让我全换了，你他妈的在逗我？</p>
+
+<p><img src="/images/custom/post/2017-03-07-godeyezhi-ri-zhi-jian-kong/%E4%BD%A0%E4%BB%96%E5%A6%88%E7%9A%84%E5%9C%A8%E9%80%97%E6%88%91.jpg" alt="hello world" /></p>
+
+<p>的确，这样接入方的开发者的工作量就太大了，而且也和全自动记录日志沾不上边，不是我们的最佳方案，换！</p>
+
+<br/>
+
+
+<h2>NSLog宏</h2>
+
+<p>相信大家这个时候也都想到了NSLog宏的方案。咱可以定义一个<code>NSLog</code>的宏，去覆盖掉系统的<code>NSLog</code>的方法。在咱的<code>NSLog</code>的宏里面去调用我们第一种方案中的自定义API就好。比如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#define NSLog(frmt, ...) AppInfo(frmt, ##__VA_ARGS__)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>用这招偷梁换柱的方法，我们就可以在我们的<code>AppInfo</code>里面撒欢的处理我们的日志啦，用户一调我们就知道，用户一调我们就知道，好开心啊。赶紧找我们的接入方开发者来接入。</p>
+
+<p>“我不接!”</p>
+
+<p>“为啥子哟？”</p>
+
+<p>“因为我现在用的开源日志记录框架也有了一个<code>NSLog</code>宏，把你的接入了日志记录框架的<code>NSLog</code>宏会被你覆盖掉，也有可能你的宏会被他的宏覆盖掉，谁先加载谁被覆盖！”</p>
+
+<p>“&hellip;&hellip;(握草泥马)”</p>
+
+<p><img src="/images/custom/post/2017-03-07-godeyezhi-ri-zhi-jian-kong/%E6%8F%A1%E8%8D%89%E6%B3%A5%E9%A9%AC.jpg" alt="hello world" /></p>
+
+<p>看来，<code>NSLog</code>宏的方案虽然好，但是一旦出现另一个<code>NSLog</code>宏就会出现“一山不容二宏”，“宏和宏不可兼得”的现象。我们不能保证接入方的开发者们不会接入其他编写了<code>NSLog</code>宏的第三方库，也不能保证接入方的开发者自己不会写一个<code>NSLog</code>宏。由此可见，<code>NSLog</code>宏的方案虽好，但是存在易冲突，不可靠，不可控等问题。换！</p>
+
+<h2>寻找新的方案</h2>
+
+<p>现在，两个方案都被我们排除了，还有啥比这两个更好的方案可以用呢。如果脑海里暂时没有好的方案与想法，我们就应该祭出我们程序员的基本生存技能，问度娘。。。。。。不是，问Google！</p>
+
+<p>首先，我们去搜索一下Apple关于<code>NSLog</code>的文档。我们会发现<code>NSLog</code>方法中调用的是<code>NSLogv</code>方法。Apple文档中对于<code>NSLogv</code>函数是这样写的<code>Logs an error message to the Apple System Log facility</code>(参见<a href="https://developer.apple.com/reference/foundation/1395074-nslogv?language=objc">https://developer.apple.com/reference/foundation/1395074-nslogv?language=objc</a>)。</p>
+
+<p>这句话有两个信息我们需要重点关注下，一个就是<code>error message</code>,还有一个就是<code>Apple System Log</code>,为啥<code>NSLog</code>是记录错误信息的，而不是日志信息呢？<code>Apple System Log</code>又是个什么鬼？</p>
+
+<p>不急，我们再搜索下<code>CocoaLumberjack</code>的文档，我们会发现<code>CocoaLumberjack</code>的文档说了这么两句话:</p>
+
+<pre><code>NSLog does 2 things:
+    It writes log messages to the Apple System Logging (asl) facility. This allows log messages to show up in Console.app.
+
+    It also checks to see if the application's stderr stream is going to a terminal (such as when the application is being run via Xcode). If so it writes the log message to stderr (so that it shows up in the Xcode console).
+</code></pre>
+
+<p>参见<a href="https://github.com/CocoaLumberjack/CocoaLumberjack/blob/b1a3837366bc286ee24671ef1042b7214a8aa0ca/Documentation/Performance.md">https://github.com/CocoaLumberjack/CocoaLumberjack/blob/b1a3837366bc286ee24671ef1042b7214a8aa0ca/Documentation/Performance.md</a></p>
+
+<p><code>CocoaLumberjack</code>的文档告诉我们，当我们写了一句<code>NSLog</code>的时候，他会做两件事情：1.把日志写到<code>Apple System Log</code>里面。2.把日志展示到Xcode的控制台上面。</p>
+
+<p>两个文档都提到了<code>Apple System Log</code>，那这个<code>Apple System Log</code>到底是个什么鬼。其实<code>Apple System Log</code>可以理解为就是一个我们设备的日志数据库，这里存放了所有应用所有进程产生的日志。也就是说，不管在哪，只要你调用了<code>NSLog</code>,系统就会把它写到<code>Apple System Log</code>中。</p>
+
+<p>那为啥<code>NSLog</code>是记录错误信息的，而不是日志信息呢？其实Apple设计<code>NSLog</code>的时候就是一个记录错误日志的API，不然他也不会把日志写到一个叫<code>Apple System Log</code>的数据库里面，要知道记录日志是一个高频发的操作，如果每条都放到数据库中，是一件很浪费性能的事情。所以我觉得应该叫<code>NSLogError</code>才更合适。</p>
+
+<p><code>NSLog</code>耗性能的一个原因也是因为需要把日志数据写到<code>Apple System Log</code>数据库，所以大伙的App线上Release版本尽量不要写<code>NSLog</code>，不但耗性能，而且不安全。Swift的<code>print</code>方法就不会把日志写到数据库中。当然在Swift中并没有废弃掉<code>NSLog</code>方法，但是Swift对<code>NSLog</code>方法做了优化，只有在模拟器环境下才会将日志写入<code>Apple System Log</code>。</p>
+
+<h2>Apple System Log</h2>
+
+<p>OK，我们找到了我们的方案:<code>Apple System Log</code>。Apple为<code>Apple System Log</code>提供了一个framework供大家使用来对<code>Apple System Log</code>的数据进行操作。他就是<code>asl</code>,那下面我们就来试试怎么通过代码把<code>Apple System Log</code>的数据捞出来。</p>
+
+<p>首先，我们需要把我们的<code>asl</code>模块import进来:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">import</span> <span class="n">asl</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们创建一个专门用来捞ASL的日志的类<code>ASLEye</code>,并且做个<code>Timer</code>定时器，定时拉取ASL的数据:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">public</span> <span class="k">class</span> <span class="nc">ASLEye</span><span class="p">:</span> <span class="no">NSObject</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kp">public</span> <span class="n">func</span> <span class="nb">open</span><span class="p">(</span><span class="n">with</span> <span class="ss">interval</span><span class="p">:</span><span class="no">TimeInterval</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="no">Timer</span><span class="o">.</span><span class="n">scheduledTimer</span><span class="p">(</span><span class="ss">timeInterval</span><span class="p">:</span> <span class="n">interval</span><span class="p">,</span><span class="ss">target</span><span class="p">:</span> <span class="nb">self</span><span class="p">,</span><span class="ss">selector</span><span class="p">:</span> <span class="c1">#selector(ASLEye.pollingLogs),userInfo: nil,repeats: true)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kp">public</span> <span class="n">func</span> <span class="n">close</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="o">.</span><span class="n">timer?</span><span class="o">.</span><span class="n">invalidate</span><span class="p">()</span>
+</span><span class='line'>        <span class="nb">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kp">private</span> <span class="n">var</span> <span class="ss">timer</span><span class="p">:</span> <span class="no">Timer</span><span class="p">?</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>好了，现在就让我们来实现<code>pollingLogs</code>方法，来拉取我们的数据。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@objc</span> <span class="kp">private</span> <span class="n">func</span> <span class="n">pollingLogs</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="sr">//</span><span class="no">TODO</span>  <span class="err">调用拉取数据</span><span class="no">API</span><span class="err">，获得数据数组</span>
+</span><span class='line'>    <span class="sr">//</span><span class="no">TODO</span>  <span class="err">判断数据数组是否为空</span>
+</span><span class='line'>    <span class="sr">//</span><span class="no">TODO</span>  <span class="err">将数据数组回调给上层</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>咱先不着急<code>pollingLogs</code>方法的具体实现。大家可以和我一样先注释好方法要做的事情。</p>
+
+<p>这里我们要先介绍下<code>asl</code>的api的特点。<code>asl</code>的api类似SQL语句，你可以往查询语句里面加参数来过滤数据，比如要查询当前App的日志的话，需要设置App的BundleID，当然，我们每次启动我们的App的时候都是不同的进程，所以我们还需要设置当前App的进程ID。因此我们可以编写一个<code>initQuery</code>的方法来生成我们的查询语句：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">initQuery</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">aslmsg</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">var</span> <span class="ss">query</span><span class="p">:</span> <span class="n">aslmsg</span> <span class="o">=</span> <span class="n">asl_new</span><span class="p">(</span><span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_TYPE_QUERY</span><span class="p">))</span>
+</span><span class='line'>        <span class="sr">//se</span><span class="n">t</span> <span class="no">BundleIdentifier</span> <span class="n">to</span> <span class="no">ASL_KEY_FACILITY</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">bundleIdentifier</span> <span class="o">=</span> <span class="p">(</span><span class="no">Bundle</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bundleIdentifier!</span> <span class="n">as</span> <span class="no">NSString</span><span class="p">)</span><span class="o">.</span><span class="n">utf8String</span>
+</span><span class='line'>        <span class="n">asl_set_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="no">ASL_KEY_FACILITY</span><span class="p">,</span> <span class="n">bundleIdentifier</span><span class="p">,</span> <span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_QUERY_OP_EQUAL</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="sr">//se</span><span class="n">t</span> <span class="n">pid</span> <span class="n">to</span> <span class="no">ASL_KEY_PID</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">pid</span> <span class="o">=</span> <span class="no">NSString</span><span class="p">(</span><span class="nb">format</span><span class="p">:</span> <span class="s2">&quot;%d&quot;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">cString</span><span class="p">(</span><span class="ss">using</span><span class="p">:</span> <span class="nb">String</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">utf8</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">asl_set_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="no">ASL_KEY_PID</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_QUERY_OP_NUMERIC</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">query</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们来编写拉取数据API，获得数据数组的API，这个API要做的事情就是调用<code>initQuery()</code>方法生成我们的查询语句，然后解析返回的response，将response解析成一个字符串的数组返回给调动着，咱就叫他<code>retrieveLogs()</code>方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">retrieveLogs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">[</span><span class="nb">String</span><span class="o">]</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">var</span> <span class="n">logs</span> <span class="o">=</span> <span class="o">[</span><span class="nb">String</span><span class="o">]</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">var</span> <span class="ss">query</span><span class="p">:</span> <span class="n">aslmsg</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">initQuery</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">let</span> <span class="ss">response</span><span class="p">:</span> <span class="n">aslresponse?</span> <span class="o">=</span> <span class="n">asl_search</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">guard</span> <span class="n">response</span> <span class="o">!=</span> <span class="kp">nil</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">logs</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">var</span> <span class="n">message</span> <span class="o">=</span> <span class="n">asl_next</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">while</span> <span class="p">(</span><span class="n">message</span> <span class="o">!=</span> <span class="kp">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">let</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="ss">from</span><span class="p">:</span> <span class="n">message!</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">logs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">message</span> <span class="o">=</span> <span class="n">asl_next</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">asl_free</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">asl_free</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">logs</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">parserLog</span><span class="p">(</span><span class="n">from</span> <span class="ss">message</span><span class="p">:</span><span class="n">aslmsg</span><span class="p">)</span> <span class="o">-&gt;</span><span class="nb">String</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">content</span> <span class="o">=</span> <span class="n">asl_get</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="no">ASL_KEY_MSG</span><span class="p">)</span><span class="o">!</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">String</span><span class="p">(</span><span class="ss">cString</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span> <span class="ss">encoding</span><span class="p">:</span> <span class="nb">String</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">utf8</span><span class="p">)</span><span class="o">!</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>好，现在我们让<code>pollingLogs()</code>来调用我们的<code>retrieveLogs()</code>方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@objc</span> <span class="kp">private</span> <span class="n">func</span> <span class="n">pollingLogs</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">logs</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">retrieveLogs</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">logs</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nb">self</span><span class="o">.</span><span class="n">delegate?</span><span class="o">.</span><span class="n">aslMonitor?</span><span class="p">(</span><span class="ss">aslMonitor</span><span class="p">:</span> <span class="nb">self</span><span class="p">,</span> <span class="ss">didMonitorLogs</span><span class="p">:</span> <span class="n">logs</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样我们的日志就能通过我们的delegate方法回调给上层了。当然在这之前我们需要编写一个我们这个delegate的<code>protocol</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@objc</span> <span class="kp">public</span> <span class="n">protocol</span> <span class="ss">ASLEyeDelegate</span><span class="p">:</span> <span class="k">class</span> <span class="p">{</span>
+</span><span class='line'>    <span class="vi">@objc</span> <span class="n">optional</span> <span class="n">func</span> <span class="n">aslEye</span><span class="p">(</span><span class="ss">aslEye</span><span class="p">:</span><span class="no">ASLEye</span><span class="p">,</span><span class="n">catchLogs</span> <span class="ss">logs</span><span class="p">:</span><span class="o">[</span><span class="nb">String</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在<code>ASLEye</code>上添加一个delegate的变量:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">public</span> <span class="n">weak</span> <span class="n">var</span> <span class="ss">delegate</span><span class="p">:</span> <span class="no">ASLEyeDelegate</span><span class="p">?</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是，这个时候大家去调用NSLog会发现存在一个问题。比如我调用了下<code>NSLog("Hello")</code>,我们的日志监控每次轮询都会取到我们的日志数据，我们的delegate会一直回调，把<code>Hello</code>给上层。</p>
+
+<p>会造成这样其实也不难理解，因为App System Log是一个数据库，按照咱现在的查询语句，每次插叙的时候当然会把当前App当前的日志全部返回给我们，所以，我们还需要设置一个&#8217;游标&#8217;，换句话说就是我们需要在我们的查询语句里加一个参数，将我们上次查到的最后一个日志的id给塞进去，然后查询大于这个ID的日志。</p>
+
+<p>OK,首先，我们来设置一个变量<code>lastMessageID</code>，用来记录最后一次查到的日志ID：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span> <span class="n">var</span> <span class="ss">lastMessageID</span><span class="p">:</span> <span class="no">Int32</span> <span class="o">=</span> <span class="mi">0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在我们的<code>initQuery()</code>方法里最后返回我们的query前将我们的<code>lastMessageID</code>给塞进去：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">initQuery</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">aslmsg</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">var</span> <span class="ss">query</span><span class="p">:</span> <span class="n">aslmsg</span> <span class="o">=</span> <span class="n">asl_new</span><span class="p">(</span><span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_TYPE_QUERY</span><span class="p">))</span>
+</span><span class='line'>        <span class="sr">//se</span><span class="n">t</span> <span class="no">BundleIdentifier</span> <span class="n">to</span> <span class="no">ASL_KEY_FACILITY</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">bundleIdentifier</span> <span class="o">=</span> <span class="p">(</span><span class="no">Bundle</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bundleIdentifier!</span> <span class="n">as</span> <span class="no">NSString</span><span class="p">)</span><span class="o">.</span><span class="n">utf8String</span>
+</span><span class='line'>        <span class="n">asl_set_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="no">ASL_KEY_FACILITY</span><span class="p">,</span> <span class="n">bundleIdentifier</span><span class="p">,</span> <span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_QUERY_OP_EQUAL</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="sr">//se</span><span class="n">t</span> <span class="n">pid</span> <span class="n">to</span> <span class="no">ASL_KEY_PID</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">pid</span> <span class="o">=</span> <span class="no">NSString</span><span class="p">(</span><span class="nb">format</span><span class="p">:</span> <span class="s2">&quot;%d&quot;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">cString</span><span class="p">(</span><span class="ss">using</span><span class="p">:</span> <span class="nb">String</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">utf8</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">asl_set_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="no">ASL_KEY_PID</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_QUERY_OP_NUMERIC</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">lastMessageID</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">let</span> <span class="n">m</span> <span class="o">=</span> <span class="no">NSString</span><span class="p">(</span><span class="nb">format</span><span class="p">:</span> <span class="s2">&quot;%d&quot;</span><span class="p">,</span> <span class="nb">self</span><span class="o">.</span><span class="n">lastMessageID</span><span class="p">)</span><span class="o">.</span><span class="n">utf8String</span>
+</span><span class='line'>            <span class="n">asl_set_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="no">ASL_KEY_MSG_ID</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="no">UInt32</span><span class="p">(</span><span class="no">ASL_QUERY_OP_GREATER</span> <span class="o">|</span> <span class="no">ASL_QUERY_OP_NUMERIC</span><span class="p">));</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">query</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后，我们需要在每次解析我们的日志的时候将我们的日志ID给记录下来放到<code>lastMessageID</code>中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">parserLog</span><span class="p">(</span><span class="n">from</span> <span class="ss">message</span><span class="p">:</span><span class="n">aslmsg</span><span class="p">)</span> <span class="o">-&gt;</span><span class="nb">String</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">content</span> <span class="o">=</span> <span class="n">asl_get</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="no">ASL_KEY_MSG</span><span class="p">)</span><span class="o">!</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">msg_id</span> <span class="o">=</span> <span class="n">asl_get</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="no">ASL_KEY_MSG_ID</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">let</span> <span class="n">m</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">msg_id</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">m</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nb">self</span><span class="o">.</span><span class="n">lastMessageID</span> <span class="o">=</span> <span class="n">m</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">String</span><span class="p">(</span><span class="ss">cString</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span> <span class="ss">encoding</span><span class="p">:</span> <span class="nb">String</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">utf8</span><span class="p">)</span><span class="o">!</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OK,这样，我们就能够全自动的监控我们的日志啦。上层开发者还是按照他们的方式玩就好，我们都能拿到他们的日志。
+该章节涉及到的开源库<code>ASLEye</code>有兴趣的同学可以移步<a href="https://github.com/zixun/ASLEye">https://github.com/zixun/ASLEye</a>查看。</p>
+
+<br />
+
+
+<br />
+
+
+<h2>更好的方案</h2>
+
+<p>通过ASL来监控NSLog日志虽然能很好的完成自动监控的功能，但是毕竟<code>Apple System Log</code>是一个数据库，每次做查询操作由于会产生I/0操作，所以会产生一定的性能消耗。虽然这点性能消耗在日常应用的运行时完全可以忽略不计，但是当我们在统计应用整个流程的CPU使用率的时候还是会造成一定的干扰，那有没有更好的方案呢？</p>
+
+<p>当然有。那就是将<code>NSLog</code>方法给hook掉。不过当我们点开<code>NSLog</code>方法的时候可以发现这个API并不是一个Objective-C语言的方法，而是一个C语言包装的API。C语言的API当然不能用我们Runtime的Method Swizzle来替换，他并不会走OC的运行时。</p>
+
+<p>不过方法总比问题多，Facebook有一个名字叫fishhook的开源库，就可以做到将我们的<code>Mach-O</code>的库的符号表重新绑定，因此应该也能将我们的<code>NSLog</code>重新绑定，重新绑定后就可以做我们的日志监控啦。</p>
+
+<p>有兴趣的同学可以自己实验下，笔者也会在今后<code>GodEye</code>的更新迭代中探索替换该方案来实现全自动的日志监控。当然也会将实现原理编写成该书的一个章节提供给大家。</p>
+
+<h1>1 监控print日志</h1>
+
+<p>前一章节我们分析了<code>NSLog</code>日志的监控，不过接触过Swift语言的同学都知道,Swift中大家一般都是用<code>print</code>来记录日志。当然，Swift并没有将<code>NSLog</code>给废弃掉。</p>
+
+<h2>NSLog In Swift</h2>
+
+<p>当然，Swift中我们也可以用<code>NSLog</code>来做日志记录，但是Swift对<code>NSLog</code>做过优化。笔者发现Swift中调用<code>NSLog</code>方法，它并不会想Objective-C中调用<code>NSLog</code>方法那样将日志放入<code>Apple System Log</code>中，模拟器环境下除外。也就是说我们在真实环境下并不能通过<code>ALS</code>获取<code>NSLog</code>的日志信息。因此我们需要寻找其他的办法。</p>
+
+<h2>自定义print方法</h2>
+
+<p>我们来看看Swift中<code>print</code>方法的定义：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">public</span> <span class="n">func</span> <span class="nb">print</span><span class="p">(</span><span class="n">_</span> <span class="ss">items</span><span class="p">:</span> <span class="no">Any</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">,</span> <span class="ss">separator</span><span class="p">:</span> <span class="nb">String</span> <span class="o">=</span> <span class="n">default</span><span class="p">,</span> <span class="ss">terminator</span><span class="p">:</span> <span class="nb">String</span> <span class="o">=</span> <span class="n">default</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中<code>separator</code>的默认值是一个&#8221; &ldquo;（空格字符串）。<code>terminator</code>的默认值是&rdquo;\n&#8221;（回车符）。</p>
+
+<p>我们自定义的<code>print</code>方法不能完全和Swift的一样,不然编译器会给你一个报错<code>Ambiguous use of 'print(_:separator:terminator:)'</code>,因为两个API一模一样，编译器就不知道去链接哪个API了。</p>
+
+<p>不过我们可以把默认值去掉，只需要一个item参数就好：</p>
+
+<br />
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">public</span> <span class="n">func</span> <span class="nb">print</span><span class="p">(</span><span class="n">_</span> <span class="ss">items</span><span class="p">:</span> <span class="no">Any</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="sr">//</span><span class="ss">TODO</span><span class="p">:</span> <span class="no">Custom</span> <span class="no">Actions</span>
+</span><span class='line'>    <span class="no">Swift</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样，我们只需要在使用print方法的swift文件中，import我们这个自定义api的库就好了。然后将<code>TODO: Custom Actions</code>中放入我们的日志监控操作即可。</p>
+
+<h2>自定义日志框架</h2>
+
+<p>自定义print方法固然不错，但是使用者很容易忘了import我们这个自定义api的库，Swift中也没有预加载的功能，因此使用者很容易忘记做import操作，导致监控不到。而且单独一个print方法无法优雅的区分日志的类型，比如log,warning,error等。更不能获取文件名，方法名等日志辅助信息。因此我们何尝不自定义一个轻量级的日志框架呢。</p>
+
+<p>该日志框架大家可通过<a href="https://github.com/zixun/Log4G">https://github.com/zixun/Log4G</a>下载，文中由于篇幅的原因，只会列出关键代码，建议将开源源码下载后对照着源码查看，会更便于理解。</p>
+
+<p>我们先来看一张<code>Log4G</code>的简要设计图：</p>
+
+<p><img src="/images/custom/post/2017-03-07-godeyezhi-ri-zhi-jian-kong/log4g_design.jpg" alt="hello world" /></p>
+
+<p>从图上我们可以看出，我们对外有三个接口，分别是<code>log()</code>,<code>warning()</code>和<code>error()</code>。他们内部都会调用一个不公开的接口<code>record()</code>,当然在方法中会自动获取日志的文件（file），行数（line），方法名（function）以及线程（thread），然后传递给<code>record()</code>方法，<code>record()</code>方法内部所有的操作都在一个指定的queue中进行，可以防止多线程的问题。<code>record()</code>会做两件事，一个就是调用系统的<code>print()</code>函数，还有一个就是通知<code>Log4g</code>内部维护的delegate数组，告诉日志监听者们新的日志信息。</p>
+
+<p>我们先来看看<code>log()</code>的实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="o">/</span> <span class="n">record</span> <span class="n">a</span> <span class="n">log</span> <span class="n">type</span> <span class="n">message</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span> <span class="o">-</span> <span class="ss">Parameters</span><span class="p">:</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">message</span><span class="p">:</span> <span class="n">log</span> <span class="n">message</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">file</span><span class="p">:</span> <span class="n">file</span> <span class="n">which</span> <span class="n">call</span> <span class="n">the</span> <span class="n">api</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">line</span><span class="p">:</span> <span class="n">line</span> <span class="n">number</span> <span class="n">at</span> <span class="n">file</span> <span class="n">which</span> <span class="n">call</span> <span class="n">the</span> <span class="n">api</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">function</span><span class="p">:</span> <span class="n">function</span> <span class="nb">name</span> <span class="n">which</span> <span class="n">call</span> <span class="n">the</span> <span class="n">api</span>
+</span><span class='line'><span class="nb">open</span> <span class="k">class</span> <span class="n">func</span> <span class="n">log</span><span class="p">(</span><span class="n">_</span> <span class="ss">message</span><span class="p">:</span> <span class="no">Any</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="ss">file</span><span class="p">:</span> <span class="nb">String</span> <span class="o">=</span> <span class="c1">#file,</span>
+</span><span class='line'>                    <span class="ss">line</span><span class="p">:</span> <span class="no">Int</span> <span class="o">=</span> <span class="c1">#line,</span>
+</span><span class='line'>                    <span class="ss">function</span><span class="p">:</span> <span class="nb">String</span> <span class="o">=</span> <span class="c1">#function) {</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="ss">type</span><span class="p">:</span> <span class="o">.</span><span class="n">log</span><span class="p">,</span>
+</span><span class='line'>                       <span class="ss">thread</span><span class="p">:</span> <span class="no">Thread</span><span class="o">.</span><span class="n">current</span><span class="p">,</span>
+</span><span class='line'>                       <span class="ss">message</span><span class="p">:</span> <span class="s2">&quot;\(message)&quot;</span><span class="p">,</span>
+</span><span class='line'>                       <span class="ss">file</span><span class="p">:</span> <span class="n">file</span><span class="p">,</span>
+</span><span class='line'>                       <span class="ss">line</span><span class="p">:</span> <span class="n">line</span><span class="p">,</span>
+</span><span class='line'>                       <span class="ss">function</span><span class="p">:</span> <span class="n">function</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们通过<code>#file</code>,<code>#line</code>,<code>#function</code>可以自动获取调用API时候的文件名，行数以及方法名，不需要调用者参与。然后通过<code>Thread.current</code>拿到当前线程，一并传递给<code>record</code>方法。这样调用者只需要传递日志即可，其他一切都是自动。</p>
+
+<p><code>warning()</code>和<code>error()</code>原理一致，那我们来看看<code>record()</code>方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="o">/</span> <span class="n">record</span> <span class="n">message</span> <span class="n">base</span> <span class="n">function</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span> <span class="o">-</span> <span class="ss">Parameters</span><span class="p">:</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">type</span><span class="p">:</span> <span class="n">log</span> <span class="n">type</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">thread</span><span class="p">:</span> <span class="n">thread</span> <span class="n">which</span> <span class="n">log</span> <span class="n">the</span> <span class="n">messsage</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">message</span><span class="p">:</span> <span class="n">log</span> <span class="n">message</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">file</span><span class="p">:</span> <span class="n">file</span> <span class="n">which</span> <span class="n">call</span> <span class="n">the</span> <span class="n">api</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">line</span><span class="p">:</span> <span class="n">line</span> <span class="n">number</span> <span class="n">at</span> <span class="n">file</span> <span class="n">which</span> <span class="n">call</span> <span class="n">the</span> <span class="n">api</span>
+</span><span class='line'><span class="sr">//</span><span class="o">/</span>   <span class="o">-</span> <span class="ss">function</span><span class="p">:</span> <span class="n">function</span> <span class="nb">name</span> <span class="n">which</span> <span class="n">call</span> <span class="n">the</span> <span class="n">api</span>
+</span><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">record</span><span class="p">(</span><span class="ss">type</span><span class="p">:</span><span class="no">Log4gType</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">thread</span><span class="p">:</span><span class="no">Thread</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">message</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">file</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">line</span><span class="p">:</span> <span class="no">Int</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">function</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">model</span> <span class="o">=</span> <span class="no">LogModel</span><span class="p">(</span><span class="ss">type</span><span class="p">:</span> <span class="n">type</span><span class="p">,</span>
+</span><span class='line'>                             <span class="ss">thread</span><span class="p">:</span> <span class="n">thread</span><span class="p">,</span>
+</span><span class='line'>                             <span class="ss">message</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
+</span><span class='line'>                             <span class="ss">file</span><span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="ss">of</span><span class="p">:</span> <span class="n">file</span><span class="p">),</span>
+</span><span class='line'>                             <span class="ss">line</span><span class="p">:</span> <span class="n">line</span><span class="p">,</span>
+</span><span class='line'>                             <span class="ss">function</span><span class="p">:</span> <span class="n">function</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="n">delegate</span> <span class="k">in</span> <span class="nb">self</span><span class="o">.</span><span class="n">delegates</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">delegate</span><span class="o">.</span><span class="n">delegate?</span><span class="o">.</span><span class="n">log4gDidRecord</span><span class="p">(</span><span class="ss">with</span><span class="p">:</span> <span class="n">model</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>record()</code>方法内部通过<code>self.queue.async{...}</code>将所有的操作都同步在一个统一的线程中，然后调用系统的<code>print()</code>方法并生成一个日志的model，告诉<code>Log4g</code>内部维护的delegate数组监听到的新的日志。这里涉及成delegate数组可以方便日志监听的扩展，<code>Log4g</code>顾名思义，就是<code>Log4GodEye</code>,就是设计给<code>GodEye</code>使用的日志记录框架，<code>GodEye</code>是delegate的一员，但是可能用户的App其他地方也需要监控日志，只要将其加入到delegate即可。</p>
+
+<p>附<code>GodEye</code>开源地址：<a href="https://github.com/zixun/GodEye">https://github.com/zixun/GodEye</a>，<code>GodEye</code>是一个可以自动监控日志，崩溃，卡顿，网络，内存泄漏，沙盒文件，CPU,RAM，FPS,流量等信息的工具，功能丰富，just like god open his eye。</p>
+
+<h2>delegate数组的坑</h2>
+
+<p>在Objective-C中，我们将delegate放入一个数组中完全没有问题，因为<code>NSArray</code>不会强引用放进来的对象。但是Swift中的<code>Array</code>是是一个结构体，会强引用放入的元素。比如我们的delegate是一个ViewController，将我们的ViewController放入Array后，只要Array不释放，我们的ViewController就永远不会释放，但是ViewController可能已经被pop出去了，这就造成了内存泄漏。那怎么办呢？</p>
+
+<p>只要做一层weak化的包装就好，就拿<code>Log4g</code>来说，内部维护了一个delegate的数组：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">fileprivate</span> <span class="n">var</span> <span class="n">delegates</span> <span class="o">=</span> <span class="o">[</span><span class="no">WeakLog4GDelegate</span><span class="o">]</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那<code>WeakLog4GDelegate</code>是个什么鬼呢，这个属性的申明是<code>fileprivate</code>的，说明用户是不知道<code>WeakLog4GDelegate</code>的，我们来看看<code>WeakLog4GDelegate</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">WeakLog4GDelegate</span><span class="p">:</span> <span class="no">NSObject</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">weak</span> <span class="n">var</span> <span class="n">delegate</span> <span class="p">:</span> <span class="no">Log4GDelegate</span><span class="p">?</span>
+</span><span class='line'>    <span class="n">init</span> <span class="p">(</span><span class="ss">delegate</span><span class="p">:</span> <span class="no">Log4GDelegate</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">super</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+</span><span class='line'>        <span class="nb">self</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">delegate</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，<code>WeakLog4GDelegate</code>是<code>Log4GDelegate</code>的一个weak化包装，内部有一个<code>Log4GDelegate</code>的weak属性，也通过<code>Log4GDelegate</code>来初始化。</p>
+
+<p>这样当我们将<code>WeakLog4GDelegate</code>放入数组后，外部的Log4GDelegate就不会因为强制引用而无法释放了。当然<code>WeakLog4GDelegate</code>并不是一个<code>open</code>或者<code>public</code>的类，所以我们还需要包装一些方法让使用者添加或删除外部使用的<code>Log4GDelegate</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">open</span> <span class="k">class</span> <span class="n">func</span> <span class="n">add</span><span class="p">(</span><span class="ss">delegate</span><span class="p">:</span><span class="no">Log4GDelegate</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">log4g</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">shared</span>
+</span><span class='line'>    <span class="sr">//</span> <span class="n">delete</span> <span class="n">null</span> <span class="n">week</span> <span class="n">delegate</span>
+</span><span class='line'>    <span class="n">log4g</span><span class="o">.</span><span class="n">delegates</span> <span class="o">=</span> <span class="n">log4g</span><span class="o">.</span><span class="n">delegates</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="vg">$0</span><span class="o">.</span><span class="n">delegate</span> <span class="o">!=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="sr">//</span> <span class="n">judge</span> <span class="k">if</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">delegate</span> <span class="n">from</span> <span class="n">parameter</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">contains</span> <span class="o">=</span> <span class="n">log4g</span><span class="o">.</span><span class="n">delegates</span><span class="o">.</span><span class="n">contains</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="vg">$0</span><span class="o">.</span><span class="n">delegate?</span><span class="o">.</span><span class="n">hash</span> <span class="o">==</span> <span class="n">delegate</span><span class="o">.</span><span class="n">hash</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="sr">//</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">contains</span><span class="p">,</span> <span class="n">append</span> <span class="n">it</span> <span class="n">with</span> <span class="n">weak</span> <span class="n">wrapped</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">contains</span> <span class="o">==</span> <span class="kp">false</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">let</span> <span class="n">week</span> <span class="o">=</span> <span class="no">WeakLog4GDelegate</span><span class="p">(</span><span class="ss">delegate</span><span class="p">:</span> <span class="n">delegate</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="n">delegates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">week</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nb">open</span> <span class="k">class</span> <span class="n">func</span> <span class="n">remove</span><span class="p">(</span><span class="ss">delegate</span><span class="p">:</span><span class="no">Log4GDelegate</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">log4g</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">shared</span>
+</span><span class='line'>    <span class="n">log4g</span><span class="o">.</span><span class="n">delegates</span> <span class="o">=</span> <span class="n">log4g</span><span class="o">.</span><span class="n">delegates</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span>
+</span><span class='line'>        <span class="sr">//</span> <span class="n">filter</span> <span class="n">null</span> <span class="n">weak</span> <span class="n">delegate</span>
+</span><span class='line'>        <span class="k">return</span> <span class="vg">$0</span><span class="o">.</span><span class="n">delegate</span> <span class="o">!=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span>
+</span><span class='line'>        <span class="sr">//</span> <span class="n">filter</span> <span class="n">the</span> <span class="n">delegate</span> <span class="n">from</span> <span class="n">parameter</span>
+</span><span class='line'>        <span class="k">return</span> <span class="vg">$0</span><span class="o">.</span><span class="n">delegate?</span><span class="o">.</span><span class="n">hash</span> <span class="o">!=</span> <span class="n">delegate</span><span class="o">.</span><span class="n">hash</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    陈奕龙
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>

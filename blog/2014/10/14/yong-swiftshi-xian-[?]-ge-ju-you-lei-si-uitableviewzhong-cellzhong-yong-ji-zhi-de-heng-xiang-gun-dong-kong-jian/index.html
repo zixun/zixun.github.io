@@ -1,0 +1,551 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>用Swift实现一个具有类似UITableView中Cell重用机制的横向滚动控件 - 子循(SubCycle)</title>
+	<meta name="author" content="陈奕龙">
+
+	
+	<meta name="description" content="用Swift实现一个具有类似UITableView中Cell重用机制的横向滚动控件 这篇文章源于对一个可横向滚动并选择的类目控件的重构。最近在学Swift，所以把这个控件的核心逻辑（Cell重用）用Swift重写出来分享给大家。当然这不是Apple官方的Cell重用机制，因为Apple不开源. &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="子循(SubCycle)" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://zixun.github.io/blog/2014/10/14/yong-swiftshi-xian-%5B%3F%5D-ge-ju-you-lei-si-uitableviewzhong-cellzhong-yong-ji-zhi-de-heng-xiang-gun-dong-kong-jian/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("chenyl.exe@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    记录我的技术与生活
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:chenyl.exe@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/zixun" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">用Swift实现一个具有类似UITableView中Cell重用机制的横向滚动控件</h1>
+	<div class="entry-content" itemprop="articleBody"><p>这篇文章源于对一个可横向滚动并选择的类目控件的重构。最近在学<code>Swift</code>，所以把这个控件的核心逻辑（Cell重用）用<code>Swift</code>重写出来分享给大家。当然这不是Apple官方的Cell重用机制，因为Apple不开源.这篇文章应该会对正在学习<code>Swift</code>并且想了解Cell重用实现的同学有一定帮助。文章中涉及到的代码都放在了Github(<a href="https://github.com/zixun/ZXOptionBar-Swift">ZXOptionBar-Swift</a>),欢迎大家提issues，求血求虐求羞辱~</p>
+
+<p>第一个版本中这个控件承载了数据、视图、动画等所有的逻辑，使得这个控件在后期变得很难维护。所以我必须重构这个控件，而想到<code>UITableView</code>也是一个可滚动可选择的控件，我为什么不把它做成一个类似<code>UITableView</code>一样的横向滚动的控件呢。通过<code>delegate</code>和<code>dataSource</code>把数据和动画从控件中分离出来，通过cell重用减小cell初始化的开支。</p>
+
+<p>可是，Apple的<code>UIKit</code>不开源啊，怎么办呢？twitter为我们提供了很好的参考，那就是<a href="https://github.com/twitter/twui">TWUI</a>,这是twitter当年在MacOS上实现的类似<code>UIKit</code>的一个库，虽然已经2年没有更新了，但是里面还是有不少可以挖掘的好东西，比如Twitter版的<code>UITabelView</code>的Cell重用机制。</p>
+
+<p><code>UITableView</code>是分很多<code>section</code>的，但是横向滚动的控件一般只会有一种Cell，不会像<code>UITableView</code>一样需要分很多不同种类的Cell，所以我们可以改造<a href="https://github.com/twitter/twui">TWUI</a>的Cell重用机制，使它更适合横向滚动的视图控件。</p>
+
+<p><strong>Note:</strong>之前在团队内部做过一个这个控件的Cell重用的分享，用Keynote演示，不过是用Objective-C描述的，对于理解上会有帮助。Keynote文件也在Github上。</p>
+
+<!-- more -->
+
+
+<h1>设计分析</h1>
+
+<ul>
+<li>需要通过<code>delegate</code>设计模式将数据和视图分离</li>
+<li>需要用继承自<code>UIScrollView</code>的类来处理类似<code>UITableView</code>的逻辑(<code>ZXOptionBar</code>)</li>
+<li>需要用继承自<code>UIView</code>的类来处理类似<code>UITableViewCell</code>的逻辑(<code>ZXOptionBarCell</code>)</li>
+<li><code>ZXOptionBar</code>中需要一个容器来存放可以重用的Cell</li>
+<li><code>ZXOptionBarCell</code>中需要一个容器来存放当前显示的Cell</li>
+<li>使用<code>layoutSubviews()</code>方法来处理Cell重用逻辑</li>
+<li>需要的工具方法:
+
+<ul>
+<li>计算可见区域Rect <code>visibleRect()</code></li>
+<li>计算可见的Cell的下标index <code>indexsForVisibleColumns()</code></li>
+<li>计算指定区域Rect下的Cell的下标index <code>indexsForColumnInRect()</code></li>
+<li>计算指定下标的Cell的Rect大小 <code>rectForColumnAtIndex()</code></li>
+</ul>
+</li>
+</ul>
+
+
+<h1>核心实现</h1>
+
+<h2>通过delegate设计模式分离数据与视图</h2>
+
+<p>使用过<code>UITableView</code>的同学肯定知道，我们在使用<code>UITableView</code>的时候都是通过它的delegate和dataSource的代理方法将数据告诉我们的<code>UITableView</code>。<code>ZXOptionBar</code>也可以通过这样的方式将我们的数据和视图分离：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span> <span class="ss">MARK</span><span class="p">:</span> <span class="o">-</span> <span class="no">ZXOptionBarDataSource</span>
+</span><span class='line'><span class="n">protocol</span> <span class="ss">ZXOptionBarDataSource</span><span class="p">:</span> <span class="no">NSObjectProtocol</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">func</span> <span class="n">numberOfColumnsInOptionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Int</span>
+</span><span class='line'>    <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">cellForColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">ZXOptionBarCell</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">//</span> <span class="ss">MARK</span><span class="p">:</span> <span class="o">-</span> <span class="no">ZXOptionBarDelegate</span>
+</span><span class='line'><span class="vi">@objc</span> <span class="n">protocol</span> <span class="ss">ZXOptionBarDelegate</span><span class="p">:</span> <span class="no">UIScrollViewDelegate</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="sr">//</span> <span class="no">Display</span> <span class="n">customization</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">willDisplayCell</span> <span class="ss">cell</span><span class="p">:</span> <span class="no">ZXOptionBarCell</span><span class="p">,</span> <span class="n">forColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">didEndDisplayingCell</span> <span class="ss">cell</span><span class="p">:</span> <span class="no">ZXOptionBarCell</span><span class="p">,</span> <span class="n">forColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="sr">//</span> <span class="no">Variable</span> <span class="n">height</span> <span class="n">support</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">widthForColumnsAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">Float</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="sr">//</span><span class="no">Select</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">didSelectColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">didDeselectColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="sr">//</span><span class="no">Reload</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBarWillReloadData</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">optional</span> <span class="n">func</span> <span class="n">optionBarDidReloadData</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在ZXOptionBar中声明两个变量：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span> <span class="ss">Mark</span><span class="p">:</span> <span class="no">Var</span>
+</span><span class='line'><span class="n">weak</span> <span class="n">var</span> <span class="ss">barDataSource</span><span class="p">:</span> <span class="no">ZXOptionBarDataSource</span><span class="p">?</span>
+</span><span class='line'><span class="n">weak</span> <span class="n">var</span> <span class="ss">barDelegate</span><span class="p">:</span> <span class="no">ZXOptionBarDelegate</span><span class="p">?</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>并且在初始化方法中对其赋值</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span> <span class="ss">MARK</span><span class="p">:</span> <span class="no">Method</span>
+</span><span class='line'><span class="n">convenience</span> <span class="n">init</span><span class="p">(</span><span class="ss">frame</span><span class="p">:</span> <span class="no">CGRect</span><span class="p">,</span> <span class="ss">barDelegate</span><span class="p">:</span> <span class="no">ZXOptionBarDelegate</span><span class="p">,</span> <span class="ss">barDataSource</span><span class="p">:</span><span class="no">ZXOptionBarDataSource</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="ss">frame</span><span class="p">:</span> <span class="n">frame</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">delegate</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">barDataSource</span> <span class="o">=</span> <span class="n">barDataSource</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">barDelegate</span> <span class="o">=</span> <span class="n">barDelegate</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>心细的同学可能已经发现了，delegate和dataSource为什么在初始化方法里赋值啊，我记得 <code>UITableView</code>不是这样子的，一定是我打开的方式不对！限于这已经超出本文的范畴，想深入了解的可以看看Matt大神的<a href="http://mattgemmell.com/api-design/">API Design</a>,可以看看文中的<strong>Rule 3: Required settings should be initializer parameters</strong>,不过我建议大家花点时间全文阅读一遍，肯定受益匪浅！</p>
+
+<h2>Cell重用逻辑实现</h2>
+
+<h3>定义容器类</h3>
+
+<p>通过上面的办法我们可以把数据从我们的控件中分离出去，接下去就是最激动人心的时候了，我们需要实现我们的Cell重用的逻辑。
+首先，我们申明两个Dictionary的容器类，一个用来存放可重用的Cell，一个用来存放当前屏幕显示的Cell</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span> <span class="ss">MARK</span><span class="p">:</span> <span class="no">Private</span> <span class="no">Var</span>
+</span><span class='line'><span class="kp">private</span> <span class="n">var</span> <span class="ss">reusableOptionCells</span><span class="p">:</span> <span class="no">Dictionary</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span> <span class="no">NSMutableArray</span><span class="o">&gt;!</span>
+</span><span class='line'><span class="kp">private</span> <span class="n">var</span> <span class="ss">visibleItems</span><span class="p">:</span> <span class="no">Dictionary</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span> <span class="no">ZXOptionBarCell</span><span class="o">&gt;!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然别忘了在我们的<code>convenience</code> <code>init</code> 方法中对其赋值，这里我就不一一贴代码了，大家可以在我的Github上的<a href="https://github.com/zixun/ZXOptionBar-Swift">ZXOptionBar-Swift</a>库自行下载代码对应这边博客阅读，这里只贴一些核心的关键代码。</p>
+
+<h3>重写layoutSubviews()</h3>
+
+<p><code>layoutSubviews()</code>填塞所有Cell重用的逻辑，所以我们可以将一些独立模块的逻辑先抽离出来成一个个独立方法，读者可以先看看源码中以下几个方法先熟悉以下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">visibleRect</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="no">CGRect</span> <span class="p">{</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="err">计算可见区域</span><span class="no">Rect</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">indexsForVisibleColumns</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="err">计算可见的</span><span class="no">Cell</span><span class="err">的下标</span><span class="n">index</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">indexsForColumnInRect</span><span class="p">(</span><span class="ss">rect</span><span class="p">:</span> <span class="no">CGRect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="err">计算指定区域</span><span class="no">Rect</span><span class="err">下的</span><span class="no">Cell</span><span class="err">的下标</span><span class="n">index</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kp">private</span> <span class="n">func</span> <span class="n">rectForColumnAtIndex</span><span class="p">(</span><span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">CGRect</span> <span class="p">{</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="err">计算指定下标的</span><span class="no">Cell</span><span class="err">的</span><span class="no">Rect</span><span class="err">大小</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>好了，咱先来分析分析我们的逻辑</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="err">左滑前可见</span><span class="no">Cell</span><span class="err">的</span><span class="ss">index</span><span class="p">:</span>            <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>
+</span><span class='line'><span class="err">左滑后可见</span><span class="no">Cell</span><span class="err">的</span><span class="ss">index</span><span class="p">:</span>                <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span>
+</span><span class='line'><span class="err">需要删除的</span><span class="no">Cell</span><span class="err">的</span><span class="ss">index</span><span class="p">:</span>            <span class="mi">0</span> <span class="mi">1</span>
+</span><span class='line'><span class="err">需要添加的</span><span class="no">Cell</span><span class="err">的</span><span class="ss">index</span><span class="p">:</span>                            <span class="mi">8</span> <span class="mi">9</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img style="position:absolute; left:50%; margin-left:-375px;" src="/images/custom/post/cell.png" >
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br></p>
+
+<p>这样我们就可以发现我们需要计算的信息了:</p>
+
+<ul>
+<li>滑动前老的可见的Cell的index(<code>oldVisibleIndex</code>);</li>
+<li>滑动后新的可见的Cell的index(<code>newVisibleIndex</code>);</li>
+<li>需要删除的Cell的index(<code>indexsToRemove</code>);</li>
+<li>需要添加的Cell的index(<code>indexsToAdd</code>).</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">let</span> <span class="ss">oldVisibleIndex</span><span class="p">:</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">indexsForVisibleColumns</span><span class="p">()</span>
+</span><span class='line'><span class="n">let</span> <span class="ss">newVisibleIndex</span><span class="p">:</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">indexsForColumnInRect</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">var</span> <span class="ss">indexsToRemove</span><span class="p">:</span> <span class="no">NSMutableArray</span> <span class="o">=</span> <span class="no">NSMutableArray</span><span class="p">(</span><span class="ss">array</span><span class="p">:</span> <span class="n">oldVisibleIndex</span><span class="p">)</span>
+</span><span class='line'><span class="n">indexsToRemove</span><span class="o">.</span><span class="n">removeObjectsInArray</span><span class="p">(</span><span class="n">newVisibleIndex</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">var</span> <span class="ss">indexsToAdd</span><span class="p">:</span> <span class="no">NSMutableArray</span> <span class="o">=</span> <span class="no">NSMutableArray</span><span class="p">(</span><span class="ss">array</span><span class="p">:</span> <span class="n">newVisibleIndex</span><span class="p">)</span>
+</span><span class='line'><span class="n">indexsToAdd</span><span class="o">.</span><span class="n">removeObjectsInArray</span><span class="p">(</span><span class="n">oldVisibleIndex</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后我们要做的就是将滚动出屏幕的Cell删除掉：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="n">delete</span> <span class="n">the</span> <span class="n">cells</span> <span class="n">which</span> <span class="n">frame</span> <span class="n">out</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">indexsToRemove</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">let</span> <span class="ss">cell</span><span class="p">:</span> <span class="no">ZXOptionBarCell</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">cellForColumnAtIndex</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">indexFromIdentifyKey</span><span class="p">(</span><span class="n">i</span> <span class="n">as</span> <span class="nb">String</span><span class="p">))</span><span class="o">!</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">enqueueReusableCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">cell</span><span class="o">.</span><span class="n">removeFromSuperview</span><span class="p">()</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">visibleItems</span><span class="o">.</span><span class="n">removeValueForKey</span><span class="p">(</span><span class="n">i</span> <span class="n">as</span> <span class="nb">String</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <br/>
+<code>enqueueReusableCell()</code>方法就是将滚出屏幕的Cell放到我们的重用Cell容器中(<code>reusableOptionCells</code>),具体实现可以看工程源码。</p>
+
+<p>最后就是将进入屏幕的Cell添加进来：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="sr">//</span><span class="n">add</span> <span class="n">the</span> <span class="kp">new</span> <span class="n">cell</span> <span class="n">which</span> <span class="n">frame</span> <span class="k">in</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">indexsToAdd</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">let</span> <span class="ss">indexToAdd</span><span class="p">:</span> <span class="no">Int</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">indexFromIdentifyKey</span><span class="p">(</span><span class="n">i</span> <span class="n">as</span> <span class="nb">String</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">var</span> <span class="ss">cell</span><span class="p">:</span> <span class="no">ZXOptionBarCell</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">barDataSource!</span><span class="o">.</span><span class="n">optionBar</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="ss">cellForColumnAtIndex</span><span class="p">:</span> <span class="n">indexToAdd</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">cell</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">rectForColumnAtIndex</span><span class="p">(</span><span class="n">indexToAdd</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">cell</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">zPosition</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">cell</span><span class="o">.</span><span class="n">setNeedsDisplay</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">cell</span><span class="o">.</span><span class="n">prepareForDisplay</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">cell</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">indexToAdd</span>
+</span><span class='line'>    <span class="n">cell</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="p">(</span><span class="n">indexToAdd</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">selectedIndex</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">barDelegate!</span><span class="o">.</span><span class="n">respondsToSelector</span><span class="p">(</span><span class="no">Selector</span><span class="p">(</span><span class="s2">&quot;optionBar:willDisplayCell:forColumnAtIndex:&quot;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">barDelegate!</span><span class="o">.</span><span class="n">optionBar!</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="ss">willDisplayCell</span><span class="p">:</span> <span class="n">cell</span><span class="p">,</span> <span class="ss">forColumnAtIndex</span><span class="p">:</span> <span class="n">indexToAdd</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">visibleItems</span><span class="o">.</span><span class="n">updateValue</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="ss">forKey</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="n">as</span> <span class="nb">String</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里我们通过dataSource的 <code>cellForColumnAtIndex</code>和delegate的<code>willDisplayCell</code>来实现cell的构建和delegate的通知。</p>
+
+<h3>对外接口使用</h3>
+
+<p>这样我们就可以像使用UITableView一样使用我们的ZXOptionBar：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">import</span> <span class="no">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="no">UIViewController</span><span class="p">,</span><span class="no">ZXOptionBarDelegate</span><span class="p">,</span><span class="no">ZXOptionBarDataSource</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">internal</span> <span class="n">var</span> <span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">?</span>
+</span><span class='line'>    <span class="n">override</span> <span class="n">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">super</span><span class="o">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">optionBar</span> <span class="o">=</span> <span class="no">ZXOptionBar</span><span class="p">(</span><span class="ss">frame</span><span class="p">:</span> <span class="no">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="no">UIScreen</span><span class="o">.</span><span class="n">mainScreen</span><span class="p">()</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="ss">barDelegate</span><span class="p">:</span> <span class="nb">self</span><span class="p">,</span> <span class="ss">barDataSource</span><span class="p">:</span> <span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">optionBar!</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="sr">//</span> <span class="ss">MARK</span><span class="p">:</span> <span class="o">-</span> <span class="no">ZXOptionBarDataSource</span>
+</span><span class='line'>    <span class="n">func</span> <span class="n">numberOfColumnsInOptionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Int</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">20</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">cellForColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">ZXOptionBarCell</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">var</span> <span class="ss">cell</span><span class="p">:</span> <span class="no">CustomOptionBarCell</span><span class="p">?</span> <span class="o">=</span> <span class="n">optionBar</span><span class="o">.</span><span class="n">dequeueReusableCellWithIdentifier</span><span class="p">(</span><span class="s2">&quot;ZXOptionBarDemo&quot;</span><span class="p">)</span> <span class="n">as?</span> <span class="no">CustomOptionBarCell</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">cell</span> <span class="o">==</span> <span class="kp">nil</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">cell</span> <span class="o">=</span> <span class="no">CustomOptionBarCell</span><span class="p">(</span><span class="ss">style</span><span class="p">:</span> <span class="o">.</span><span class="n">ZXOptionBarCellStyleDefault</span><span class="p">,</span> <span class="ss">reuseIdentifier</span><span class="p">:</span> <span class="s2">&quot;ZXOptionBarDemo&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">cell!</span><span class="o">.</span><span class="n">textLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Bra-\(index)&quot;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">cell!</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="sr">//</span> <span class="ss">MARK</span><span class="p">:</span> <span class="o">-</span> <span class="no">ZXOptionBarDelegate</span>
+</span><span class='line'>    <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">widthForColumnsAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">Float</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">60</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">func</span> <span class="n">optionBar</span><span class="p">(</span><span class="ss">optionBar</span><span class="p">:</span> <span class="no">ZXOptionBar</span><span class="p">,</span> <span class="n">willDisplayCell</span> <span class="ss">cell</span><span class="p">:</span> <span class="no">ZXOptionBarCell</span><span class="p">,</span> <span class="n">forColumnAtIndex</span> <span class="ss">index</span><span class="p">:</span> <span class="no">Int</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">println</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">println</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>cellForColumnAtIndex</code>其实和<code>UITableView</code>的<code>cellForColumnAtIndex</code>类似，都会调用一个叫<code>dequeueReusableCellWithIdentifier</code>的接口，这个接口会问存放重用Cell的容器<code>reusableOptionCells</code>有没有可以重用的Cell，有就给我，没有就返回nil，我让<code>cellForColumnAtIndex</code>自己新建一个，这样我们整个重用链就构建出来了：</p>
+
+<ol>
+<li>一开始重用Cell的容器<code>reusableOptionCells</code>是空的，所以所有的Cell都是新建的。</li>
+<li>当有cell滑出屏幕的时候这个cell被放入<code>reusableOptionCells</code>中。</li>
+<li>当有cell要滑入屏幕的时候就像<code>reusableOptionCells</code>要可重用的Cell，有就重用，没有就再新建一个。</li>
+</ol>
+
+
+<h2>写在最后</h2>
+
+<p><strong>Note1:</strong>本篇文章只是抽离总结分享了一个OptionBar的核心功能（Cell重用和数据视图分离），读者可以根据自己应有的需要继承或者改写该类，添加新功能（比如：下标指示器indicator，indicator的样式，indicator的动画，类目选中动画之类的）。</p>
+
+<p><strong>Note2:</strong>文章中只是罗列了核心代码，具体代码已放在Github上：<a href="https://github.com/zixun/ZXOptionBar-Swift">ZXOptionBar-Swift</a>，感兴趣的同学可以下载下来。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    陈奕龙
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>
